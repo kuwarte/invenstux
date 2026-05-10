@@ -1,0 +1,78 @@
+
+# Environment & Secrets
+.env
+.env.local
+.env.production
+
+# Dependencies (for composer)
+/vendor/
+composer.lock
+
+# Database
+*.sql.bak
+*.sqlite
+*.sqlite3
+
+# Uploaded Files
+public/uploads/
+public/assets/uploads/
+
+# Logs
+*.log
+/logs/
+/storage/logs/
+
+# Cache
+/cache/
+/storage/cache/
+*.cache
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# PhpStorm / JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# NetBeans
+nbproject/
+
+# PHP
+*.phar
+
+# Node (optional)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Temporary Files
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.orig

@@ -1,0 +1,13 @@
+LOG:
+
+- Setup Composer (for dev formatting only)
+- Setup Entry Point (public/index.php)
+- Setup DDL (schema file)
+- Creates Core Files (
+    inheritance for controllers, 
+    instantiation of PDO,
+    object for session and router
+  )
+- Setup Config Files and Constants
+- Error Message (set to true)
+- Interrelate Core Files and Routing (Core: Controller (parent class), Database, Session, Router; Config: Database, Config; Routes: web.php)
