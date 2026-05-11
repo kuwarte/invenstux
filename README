@@ -1,7 +1,31 @@
 Invenstux: Multi-Warehouse Inventory Management System w/ POS
 
+
 Requirements
 - PHP 8.0+
 - MySQL 5.7+
 
 
+Getting Started
+1. Clone the repository:
+`git clone https://github.com/kuwarte/invenstux`
+
+2. Navigate to directory:
+`cd invenstux`
+
+3. Run Schema:
+`mysql -u root -p < database/schema.sql`
+
+4. Run Application:
+`php -S localhost:8000 -t public`
+
+
+Formatter
+- If want to use the formatter (dev tools):
+Use the command `composer install` and `vendor/bin/php-cs-fixer fix` right after cloning and project navigation.
+
+
+Requirements
+- 3NF DDL
+- Implementation of Triggers, Stored Procedures, and Views
+- Secure PDO/MySQLi connection

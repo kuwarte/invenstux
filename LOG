@@ -11,3 +11,6 @@ LOG:
 - Setup Config Files and Constants
 - Error Message (set to true)
 - Interrelate Core Files and Routing (Core: Controller (parent class), Database, Session, Router; Config: Database, Config; Routes: web.php)
+- Setup Proper README Docs
+- Structure File Separation in (Controllers, Services, Repositories, Views)
+- Create Migrations and Migration Script

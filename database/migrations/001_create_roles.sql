@@ -1,0 +1,6 @@
+CREATE TABLE roles (
+    id      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name    VARCHAR(50) NOT NULL UNIQUE,
+    description TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
