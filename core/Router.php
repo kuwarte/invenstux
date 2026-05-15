@@ -2,59 +2,68 @@
 
 class Router
 {
-    // store req
-    // $routes => [
-    //    "GET" => "uri",
-    // ]
-    protected $routes = [];
+    protected array $routes = [];
 
-    public function get($uri, $controller)
+    public function get(string $uri, string $controller): void
     {
-        $this->routes['GET'][$uri] = $controller;
+        $this->routes['GET'][$this->normalizeUri($uri)] = $controller;
     }
 
-    public function post($uri, $controller)
+    public function post(string $uri, string $controller): void
     {
-        $this->routes['POST'][$uri] = $controller;
+        $this->routes['POST'][$this->normalizeUri($uri)] = $controller;
     }
 
-    // req handler (strip qString, isFileExist, DB injection)
-    public function dispatch($uri, $method, $db)
+    public function dispatch(string $uri, string $method, PDO $db): void
     {
-        $uri = strtok($uri, '?');
         try {
-            if (!isset($this->routes[$method][$uri])) {
+            $uri = $this->normalizeUri($uri);
+
+            $handler = $this->routes[$method][$uri] ?? null;
+
+            if (!$handler) {
                 http_response_code(404);
-                echo '404 - Route not found';
+                echo "404 - Route not found for {$uri}";
                 return;
             }
 
-            $handler = $this->routes[$method][$uri];
-            [$controllerName, $methodName] = explode('@', $handler);
+            $parts = explode('@', $handler);
+            $controllerName = $parts[0];
+            $methodName = $parts[1] ?? 'index';
 
             $controllerPath = __DIR__ . "/../app/Controllers/{$controllerName}.php";
 
             if (!file_exists($controllerPath)) {
-                throw new Exception("Controller file not found: $controllerName");
+                throw new Exception("Controller {$controllerName} not found.");
             }
 
             require_once $controllerPath;
 
             if (!class_exists($controllerName)) {
-                throw new Exception("Controller class not found: $controllerName");
+                throw new Exception("Class {$controllerName} not found.");
             }
 
             $controller = new $controllerName($db);
 
             if (!method_exists($controller, $methodName)) {
-                throw new Exception("Method not found: $methodName");
+                throw new Exception("Method {$methodName} not found in {$controllerName}.");
             }
 
             $controller->$methodName();
-        } catch (Exception $e) {
+
+        } catch (Throwable $e) {
             http_response_code(500);
-            echo 'Error: ' . $e->getMessage();
+
+            echo "Application Error: " . $e->getMessage();
+
+            // error_log($e);
         }
     }
 
+    private function normalizeUri(string $uri): string
+    {
+        $uri = strtok($uri, '?');     // rem query string
+        $uri = rtrim($uri, '/');      // rem trailing slash
+        return $uri === '' ? '/' : $uri;
+    }
 }

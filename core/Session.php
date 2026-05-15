@@ -2,27 +2,39 @@
 
 class Session
 {
-    // generate session if not exist and init() call
-    public static function init()
+    public static function init(): void
     {
-        if (session_status() == PHP_SESSION_NONE) {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
     }
 
-    public static function set($key, $value)
+    public static function set(string $key, mixed $value): void
     {
         $_SESSION[$key] = $value;
     }
 
-    public static function get($key)
+    public static function get(string $key): mixed
     {
         return $_SESSION[$key] ?? null;
     }
 
-    public static function destroy()
+    public static function has(string $key): bool
     {
-        session_destroy();
+        return isset($_SESSION[$key]);
+    }
+
+    public static function remove(string $key): void
+    {
+        unset($_SESSION[$key]);
+    }
+
+    public static function destroy(): void 
+    {   
         $_SESSION = [];
+        
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
     }
 }

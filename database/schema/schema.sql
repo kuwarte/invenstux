@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS products (
     name            VARCHAR(200) NOT NULL,
     description     TEXT,
     unit_of_measure VARCHAR(30) DEFAULT 'pcs',
-    reorder_level   INT UNSIGNED DEFAULT 0,
     unit_cost       DECIMAL(12,2) DEFAULT 0.00,
     is_active       TINYINT(1) DEFAULT 1,
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -91,9 +90,7 @@ CREATE TABLE IF NOT EXISTS sales (
     user_id INT UNSIGNED NOT NULL,
     payment_amount DECIMAL(12,2) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    INDEX idx_sales_user (user_id),
-    INDEX idx_sales_date (created_at)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS sale_items (
@@ -105,9 +102,7 @@ CREATE TABLE IF NOT EXISTS sale_items (
     price DECIMAL(12,2) NOT NULL,
     FOREIGN KEY (sale_id) REFERENCES sales(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id),
-    FOREIGN KEY (warehouse_id) REFERENCES warehouses(id),
-    INDEX idx_sale_items_sale (sale_id),
-    INDEX idx_sale_items_product (product_id)
+    FOREIGN KEY (warehouse_id) REFERENCES warehouses(id)
 );
 
 CREATE TABLE IF NOT EXISTS stock_movements (
@@ -122,10 +117,5 @@ CREATE TABLE IF NOT EXISTS stock_movements (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES products(id),
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    INDEX idx_movements_product (product_id),
-    INDEX idx_movements_warehouse (warehouse_id),
-    INDEX idx_movements_type (type),
-    INDEX idx_movements_date (created_at)
-);
+    FOREIGN KEY (user_id) REFERENCES users(id)
 

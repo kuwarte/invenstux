@@ -1,267 +1,194 @@
 <?php
+define('INVESTUX_MIGRATION_START', microtime(true));
 
-define('IMS_MIGRATION_START', microtime(true));
+echo "MIGRATION STARTS\n";
+echo "==================\n\n";
 
-echo "\n";
-echo "╔════════════════════════════════════════════════════════════════════════╗\n";
-echo "║                        INVENSTUX DB MIGRATION                          ║\n";
-echo "║                     Inventory Management System                        ║\n";
-echo "╚════════════════════════════════════════════════════════════════════════╝\n\n";
-
-echo "[1/5] VERIFICATION PHASE\n";
-echo "─────────────────────────────────────────────────────────────────────────\n\n";
-
-// check php version
-echo "  % Checking PHP version...\n";
-$phpVersion = phpversion();
-echo "    PHP Version: $phpVersion\n";
-if (version_compare($phpVersion, '8.0.0', '>=')) {
-    echo "    [/] Compatible (8.0 or higher required)\n\n";
-} else {
-    echo "    [x] FAILED: PHP 8.0 or higher required\n\n";
-    exit(1);
-}
-
-// check required php ext
-// check php.ini in php dir
-echo "  % Checking required PHP extensions...\n";
-$required = ['pdo' => 'PDO', 'pdo_mysql' => 'PDO MySQL Driver', 'mbstring' => 'Multibyte String', 'session' => 'Session'];
-$missedExtensions = [];
-
-foreach ($required as $ext => $label) {
-    if (extension_loaded($ext)) {
-        echo "    [/] $label\n";
-    } else {
-        echo "    [x] $label (MISSING)\n";
-        $missedExtensions[] = $ext;
-    }
-}
-
-if (!empty($missedExtensions)) {
-    echo "\n    ERROR: Missing extensions: " . implode(', ', $missedExtensions) . "\n";
-    echo "    Please enable these extensions in php.ini\n\n";
-    exit(1);
-}
-echo "\n";
-
-// check .env if exists
-echo "  % Checking configuration...\n";
 $envFile = dirname(__DIR__) . '/.env';
-if (file_exists($envFile)) {
-    echo "    [/] .env file found\n";
-    $env = parse_ini_file($envFile);
-
-    if (isset($env['DB_HOST'], $env['DB_DATABASE'], $env['DB_USERNAME'])) {
-        echo "    [/] Database credentials configured\n";
-        echo "      - Host: {$env['DB_HOST']}\n";
-        echo "      - Database: {$env['DB_DATABASE']}\n";
-        echo "      - User: {$env['DB_USERNAME']}\n";
-    } else {
-        echo "    [x] FAILED: Incomplete database configuration in .env\n";
-        echo "      Required: DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD\n\n";
-        exit(1);
-    }
-} else {
-    echo "    [x] FAILED: .env file not found in project root\n";
-    echo "      Please copy .env.example to .env and configure database credentials\n\n";
-    exit(1);
+if (!file_exists($envFile)) {
+    die("ERROR: .env file not found. Copy .env.example to .env and configure.\n");
 }
 
-echo "\n[2/5] DATABASE CONNECTION\n";
-echo "─────────────────────────────────────────────────────────────────────────\n\n";
+$env = parse_ini_file($envFile);
+require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(__DIR__) . '/core/Database.php';
 
-// create db connection
-echo "  % Connecting to database...\n";
 try {
-    require_once dirname(__DIR__) . '/config/database.php';
-    require_once dirname(__DIR__) . '/core/Database.php';
-    $db = (new Database())->connect();
-    echo "    [/] Connection established\n";
-    echo "    [/] Using database: {$env['DB_DATABASE']}\n\n";
+    $pdo = (new Database())->connect();
+    echo "[/] Connected to database: {$env['DB_DATABASE']}\n\n";
 } catch (Exception $e) {
-    echo "    [x] FAILED: Database connection error\n";
-    echo '    Error: ' . $e->getMessage() . "\n";
-    echo "    Check your database credentials in .env\n\n";
-    exit(1);
+    die("ERROR: Database connection failed - " . $e->getMessage() . "\n");
 }
-
-
-echo "[3/5] RUNNING MIGRATIONS\n";
-echo "─────────────────────────────────────────────────────────────────────────\n\n";
-
-echo "  Executing 9 migrations...\n";
 
 $migrations = [
-    '001_create_roles.sql' => 'Create roles table',
-    '002_create_users.sql' => 'Create users table',
-    '003_create_categories.sql' => 'Create categories table',
-    '004_create_warehouses.sql' => 'Create warehouses table',
-    '005_create_products.sql' => 'Create products table',
-    '006_create_product_warehouse.sql' => 'Create product-warehouse relationships',
-    '007_create_permissions.sql' => 'Create permissions table (RBAC)',
-    '008_create_sales.sql' => 'Create sales & transactions table (POS)',
-    '009_create_stock_movements.sql' => 'Create stock audit trail'
+    '001_create_roles.sql' => 'Roles table',
+    '002_create_users.sql' => 'Users table',
+    '003_create_categories.sql' => 'Categories table',
+    '004_create_warehouses.sql' => 'Warehouses table',
+    '005_create_products.sql' => 'Products table',
+    '006_create_product_warehouse.sql' => 'Product-Warehouse relationships',
+    '007_create_permissions.sql' => 'Permissions & RBAC',
+    '008_create_sales.sql' => 'Sales & POS tables (3NF)',
+    '009_create_stock_movements.sql' => 'Stock audit trail'
 ];
 
-$successCount = 0;
-$skipCount = 0;
-$errorCount = 0;
+echo "RUNNING MIGRATIONS\n";
+echo "-----------------------------------------------------------------------\n\n";
 
-echo "\n";
-foreach ($migrations as $migration => $description) {
-    $file = dirname(__DIR__) . '/database/migrations/' . $migration;
+$success = 0;
+$skipped = 0;
+$errors = 0;
 
-    if (!file_exists($file)) {
-        printf("  [x] %-40s [FILE NOT FOUND]\n", $description);
-        $errorCount++;
+foreach ($migrations as $file => $description) {
+    $path = dirname(__DIR__) . '/database/migrations/' . $file;
+    
+    if (!file_exists($path)) {
+        printf("  [x] %-35s [FILE NOT FOUND]\n", $description);
+        $errors++;
         continue;
     }
-
+    
     try {
-        $sql = file_get_contents($file);
-        $db->exec($sql);
-        printf("  [/] %-40s [SUCCESS]\n", $description);
-        $successCount++;
-    } catch (PDOException $e) {
+        $sql = file_get_contents($path);
+        
+        if (strpos($file, 'procedure') !== false || strpos($file, 'trigger') !== false) {
+            $mysqli = new mysqli($env['DB_HOST'], $env['DB_USERNAME'], $env['DB_PASSWORD'], $env['DB_DATABASE']);
+            
+            if ($mysqli->connect_error) {
+                throw new Exception($mysqli->connect_error);
+            }
+            
+            $sql = str_replace(['DELIMITER //', 'DELIMITER ;'], '', $sql);
+            $sql = preg_replace('/--.*$/m', '', $sql); 
+            
+            $parts = preg_split('/(END\/\/|END;)/i', $sql);
+            
+            foreach ($parts as $idx => $part) {
+                $part = trim($part);
+                if (empty($part)) continue;
+                
+                if (stripos($part, 'DROP') !== false) {
+                    $dropStmt = $part;
+                    if (!preg_match('/;\s*$/', $dropStmt)) {
+                        $dropStmt .= ';';
+                    }
+                    try {
+                        $mysqli->query($dropStmt);
+                    } catch (Exception $e) {
+                    }
+                    continue;
+                }
+                
+                if (stripos($part, 'CREATE PROCEDURE') !== false || stripos($part, 'CREATE TRIGGER') !== false) {
+                    $part .= ' END';
+                    
+                    if (!$mysqli->query($part)) {
+                        throw new Exception($mysqli->error);
+                    }
+                }
+            }
+            
+            $mysqli->close();
+        } 
+        else if (strpos($file, 'view') !== false) {
+            $sql = preg_replace('/--.*$/m', '', $sql);
+            
+            $statements = explode(';', $sql);
+            $currentView = '';
+            
+            foreach ($statements as $statement) {
+                $statement = trim($statement);
+                if (empty($statement)) continue;
+                
+                if (stripos($statement, 'DROP VIEW') !== false) {
+                    try {
+                        $pdo->exec($statement);
+                    } catch (Exception $e) {
+                    }
+                } else if (stripos($statement, 'CREATE VIEW') !== false) {
+                    $currentView = $statement;
+                } else if (!empty($currentView)) {
+                    $currentView .= ';' . $statement;
+                    
+                    if (stripos($statement, 'ORDER BY') !== false || 
+                        stripos($statement, 'GROUP BY') !== false ||
+                        preg_match('/FROM\s+\w+\s*$/i', $statement)) {
+                        $pdo->exec($currentView);
+                        $currentView = '';
+                    }
+                }
+            }
+            
+            if (!empty($currentView)) {
+                $pdo->exec($currentView);
+            }
+        }
+        else {
+            $sql = preg_replace('/--.*$/m', '', $sql);
+            $statements = array_filter(array_map('trim', explode(';', $sql)));
+            foreach ($statements as $statement) {
+                if (!empty($statement)) {
+                    $pdo->exec($statement);
+                }
+            }
+        }
+        
+        printf("  [/] %-35s [SUCCESS]\n", $description);
+        $success++;
+        
+    } catch (Exception $e) {
         if (strpos($e->getMessage(), 'already exists') !== false) {
-            printf("  ~ %-40s [SKIPPED - Already exists]\n", $description);
-            $skipCount++;
+            printf("  [-] %-35s [SKIPPED]\n", $description);
+            $skipped++;
         } else {
-            printf("  x %-40s [ERROR]\n", $description);
-            echo '    -> ' . $e->getMessage() . "\n";
-            $errorCount++;
+            printf("  [x] %-35s [ERROR]\n", $description);
+            echo "    > " . substr($e->getMessage(), 0, 100) . "...\n";
+            $errors++;
         }
     }
 }
 
-echo "\n  Migration Summary: $successCount successful, $skipCount skipped, $errorCount errors\n\n";
+echo "\n";
+echo "Summary: $success successful, $skipped skipped, $errors errors\n\n";
 
-echo "[4/5] SEEDING DATABASE\n";
-echo "─────────────────────────────────────────────────────────────────────────\n\n";
-
-echo "  Executing 4 seed files...\n";
+echo "SEEDING DATABASE\n";
+echo "-----------------------------------------------------------------------\n\n";
 
 $seeds = [
-    '001_seed_roles.sql' => 'Seed default user roles',
-    '002_seed_admin.sql' => 'Seed default admin user',
-    '003_seed_permissions.sql' => 'Seed role permissions',
-    '004_seed_inventory.sql' => 'Seed sample inventory data'
+    '001_seed_roles.sql' => 'Default roles',
+    '002_seed_permissions.sql' => 'Permissions',
+    '003_seed_inventory.sql' => 'Sample data'
 ];
 
-$seedSuccessCount = 0;
-$seedSkipCount = 0;
-
-echo "\n";
-foreach ($seeds as $seed => $description) {
-    $file = dirname(__DIR__) . '/database/seeds/' . $seed;
-
-    if (!file_exists($file)) {
-        printf("  [x] %-40s [FILE NOT FOUND]\n", $description);
+foreach ($seeds as $file => $description) {
+    $path = dirname(__DIR__) . '/database/seeds/' . $file;
+    
+    if (!file_exists($path)) {
+        printf("  [x] %-35s [FILE NOT FOUND]\n", $description);
         continue;
     }
-
+    
     try {
-        $sql = file_get_contents($file);
-        $db->exec($sql);
-        printf("  ~ %-40s [SUCCESS]\n", $description);
-        $seedSuccessCount++;
-    } catch (PDOException $e) {
-        printf("  x %-40s [SKIPPED]\n", $description);
-        echo "    └─ May already exist or no changes needed\n";
-        $seedSkipCount++;
+        $sql = file_get_contents($path);
+        $pdo->exec($sql);
+        printf("  [/] %-35s [SUCCESS]\n", $description);
+    } catch (Exception $e) {
+        printf("  [-] %-35s [SKIPPED]\n", $description);
     }
 }
 
-echo "\n  Seed Summary: $seedSuccessCount successful, $seedSkipCount skipped\n\n";
-
-echo "[5/5] FINAL VERIFICATION\n";
-echo "─────────────────────────────────────────────────────────────────────────\n\n";
-
-echo "  % Verifying database tables...\n";
-$tables = [
-    'roles' => 'User Roles',
-    'users' => 'User Accounts',
-    'categories' => 'Product Categories',
-    'products' => 'Products',
-    'warehouses' => 'Warehouses',
-    'product_warehouse' => 'Product-Warehouse Mappings',
-    'permissions' => 'Role Permissions (RBAC)',
-    'sales' => 'Sales Transactions (POS)',
-    'stock_movements' => 'Stock Audit Trail'
-];
-
-$tablesVerified = 0;
-$tablesMissing = 0;
+$time = round(microtime(true) - INVESTUX_MIGRATION_START, 2);
 
 echo "\n";
-try {
-    $stmt = $db->query('SHOW TABLES');
-    $existingTables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+echo "MIGRATION COMPLETE\n";
+echo "==================\n\n";
 
-    foreach ($tables as $tableName => $description) {
-        if (in_array($tableName, $existingTables)) {
-            printf("  [/] %-30s %s\n", $description, "[$tableName]");
-            $tablesVerified++;
-        } else {
-            printf("  [x] %-30s [%s] MISSING\n", $description, $tableName);
-            $tablesMissing++;
-        }
-    }
-} catch (Exception $e) {
-    echo '  [x] Could not verify tables: ' . $e->getMessage() . "\n";
-}
+echo "RUN USERS SEED:\n";
+echo "  php database/seed_users.php\n\n";
 
-echo "\n";
+echo "START SERVER:\n";
+echo "  php -S localhost:8000 -t public\n\n";
 
-$migrationTime = round(microtime(true) - IMS_MIGRATION_START, 2);
-
-if ($tablesMissing === 0) {
-    echo "  [/] ALL TABLES VERIFIED\n";
-} else {
-    echo "  [!] WARNING: $tablesMissing table(s) missing\n";
-}
-
-echo "\n";
-echo "╔════════════════════════════════════════════════════════════════════════╗\n";
-echo "║                      MIGRATION COMPLETED SUCCESSFULLY                  ║\n";
-echo '║                        (Completed in ' . str_pad($migrationTime . 's', 6) . ")                           ║\n";
-echo "╚════════════════════════════════════════════════════════════════════════╝\n\n";
-
-echo "SYSTEM FEATURES\n";
-echo "─────────────────────────────────────────────────────────────────────────\n";
-echo "  [/] Core Inventory Management System (IMS)\n";
-echo "  [/] Point of Sale (POS) System with Transaction Tracking\n";
-echo "  [/] Role-Based Access Control (RBAC)\n";
-echo "  [/] Complete Stock Audit Trail with Stock Movements\n";
-echo "  [/] Multi-Warehouse Support\n";
-echo "  [/] Sales Analytics & Reporting\n";
-echo "  [/] Database Transaction Support\n\n";
-
-echo "USER ROLES & PERMISSIONS\n";
-echo "─────────────────────────────────────────────────────────────────────────\n";
-echo "  % Admin          → Full system access, user management, settings\n";
-echo "  % Manager        → Products, Stock, POS, Reports, Analytics\n";
-echo "  % Cashier        → POS transactions only\n";
-echo "  % Staff          → View reports and analytics only\n\n";
-
-echo "APPLICATION URLS\n";
-echo "─────────────────────────────────────────────────────────────────────────\n";
-echo "  Dashboard:       http://localhost/\n";
-echo "  POS System:      http://localhost/pos\n";
-echo "  Sales History:   http://localhost/sales\n";
-echo "  Products:        http://localhost/products\n";
-echo "  Stock:           http://localhost/stocks\n";
-echo "  Users:           http://localhost/users\n";
-echo "  Categories:      http://localhost/categories\n";
-echo "  Warehouses:      http://localhost/warehouses\n\n";
-
-echo "NEXT STEPS\n";
-echo "─────────────────────────────────────────────────────────────────────────\n";
-echo "  1. Log in with admin credentials at http://localhost/\n";
-echo "  2. Change admin password immediately\n";
-echo "  3. Configure warehouse locations\n";
-echo "  4. Add product categories and inventory\n";
-echo "  5. Create additional user accounts and assign roles\n";
-echo "  6. Start processing sales transactions via POS\n\n";
-
-echo "═════════════════════════════════════════════════════════════════════════\n\n";
+echo "ACCESS:\n";
+echo "  http://localhost:8000\n\n";
+echo "Completed in {$time} seconds\n";

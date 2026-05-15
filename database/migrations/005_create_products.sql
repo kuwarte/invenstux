@@ -5,7 +5,6 @@ CREATE TABLE products (
     name            VARCHAR(200) NOT NULL,
     description     TEXT,
     unit_of_measure VARCHAR(30) DEFAULT 'pcs',
-    reorder_level   INT UNSIGNED DEFAULT 0,
     unit_cost       DECIMAL(12,2) DEFAULT 0.00,
     is_active       TINYINT(1) DEFAULT 1,
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,

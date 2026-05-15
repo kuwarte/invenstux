@@ -10,9 +10,5 @@ CREATE TABLE stock_movements (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES products(id),
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    INDEX idx_movements_product (product_id),
-    INDEX idx_movements_warehouse (warehouse_id),
-    INDEX idx_movements_type (type),
-    INDEX idx_movements_date (created_at)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
