@@ -181,9 +181,16 @@ Naming Convention
                 [/] test-accounts.php:
                         list of available accounts
         [/] layouts
-                [/] main.php
+                [/] main.php:
                         page rendered by view() in controller to show
                         sidebar with content
+        [/] dashboard
+                [/] index.php:
+                        admin dashboard containing total sku 
+                        (products available), total warehouses,
+                        orders in (now()), revenue (now()),
+                        top revenue generators (still buggy, only calc unit !price),
+                        inventory risk assessment
 ------------------------------------------------------------------
 [x] assets
         [x] css
@@ -195,11 +202,16 @@ Naming Convention
                         test-accounts styles
                 [/] layouts.main.css:
                         main layout sidebar styles
+                [/] dashboard.index.css:
+                        layout for admin dashboard
         [x] js
                 [/] auth.test-accounts.js:
                         handles cred copy function for appending class name
-                [/] layouts.main.js
+                [/] layouts.main.js:
                         handles function for hamburger button and mobile responsiveness
+                [/] dashboard.index.js:
+                        uses third party library html->pdf
+                        for report generation
         [x] fonts
                 [x] Plus Jakarta Sans
                         still require to dl 
