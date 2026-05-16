@@ -118,4 +118,4 @@ CREATE TABLE IF NOT EXISTS stock_movements (
     FOREIGN KEY (product_id) REFERENCES products(id),
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
-
+);

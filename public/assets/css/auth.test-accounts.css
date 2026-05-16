@@ -1,0 +1,412 @@
+.site-header {
+	background-color: #064e3b;
+
+	background-image:
+		linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+		linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+		radial-gradient(circle at 30% 25%, rgba(5, 150, 105, 0.2) 0%, rgba(6, 78, 59, 0) 55%),
+		radial-gradient(circle at 80% 75%, rgba(16, 185, 129, 0.12) 0%, rgba(6, 78, 59, 0) 50%);
+
+	background-size:
+		100% 150px,
+		160px 100%,
+		100% 100%,
+		100% 100%;
+	width: 100%;
+	position: relative;
+}
+
+.site-header .topbar {
+	background: transparent;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+	position: relative;
+	z-index: 10;
+}
+
+.site-header .topbar-brand {
+	color: #ffffff !important;
+}
+
+.site-header .topbar-brand span {
+	color: var(--brand-accent-light);
+}
+
+.site-header .btn-secondary {
+	color: #ffffff !important;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.site-header .btn-secondary:hover {
+	background: rgba(255, 255, 255, 0.2);
+	border-color: #ffffff;
+	color: #ffffff;
+}
+
+.hero-wave-section {
+	background: transparent;
+	color: #ffffff;
+	padding: 48px 24px 96px;
+	text-align: center;
+	position: relative;
+	width: 100%;
+}
+
+.hero-content {
+	max-width: 800px;
+	margin: 0 auto;
+	position: relative;
+	z-index: 2;
+}
+
+.hero-content h1 {
+	font-family: "Plus Jakarta Sans", sans-serif;
+	font-size: 36px;
+	font-weight: 800;
+	color: #ffffff;
+	letter-spacing: -0.03em;
+	margin-bottom: 12px;
+}
+
+.hero-content p {
+	color: rgba(255, 255, 255, 0.9);
+	font-size: 16px;
+	line-height: 1.6;
+	max-width: 640px;
+	margin: 0 auto;
+}
+
+.hero-content .badge {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--brand-accent-light);
+	background: rgba(255, 255, 255, 0.12);
+	padding: 6px 14px;
+	border-radius: var(--radius-sm);
+	margin-bottom: 16px;
+	display: inline-block;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(4px);
+}
+
+.wave-container {
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	width: 100%;
+	overflow: hidden;
+	line-height: 0;
+	z-index: 1;
+}
+
+.wave-container svg {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 60px;
+}
+
+.page-body {
+	max-width: 1120px;
+	margin: 0 auto;
+	padding: 24px 24px 64px;
+	width: 100%;
+}
+
+.btn-action {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-family: "Plus Jakarta Sans", sans-serif;
+	font-size: 14px;
+	font-weight: 700;
+	color: #ffffff;
+	text-decoration: none;
+	padding: 10px 20px;
+	border-radius: var(--radius-md);
+	background: var(--brand-accent);
+	transition: var(--transition-base);
+	border: 1px solid transparent;
+	cursor: pointer;
+	box-shadow: var(--shadow-sm);
+}
+
+.btn-action:hover {
+	background: var(--brand-accent-hover);
+	box-shadow: var(--shadow-glow);
+}
+
+.page-body {
+	max-width: 1120px;
+	margin: 0 auto;
+	padding: 48px 24px 64px;
+	width: 100%;
+}
+
+.page-header {
+	margin-bottom: 40px;
+	border-bottom: 1px solid var(--border-light);
+	padding-bottom: 24px;
+}
+
+.page-header .badge {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--brand-accent-dark);
+	background: var(--brand-accent-light);
+	padding: 4px 8px;
+	border-radius: var(--radius-sm);
+	margin-bottom: 12px;
+	display: inline-block;
+	border: 1px solid var(--brand-accent-light);
+}
+
+.page-header h1 {
+	font-family: "Plus Jakarta Sans", sans-serif;
+	font-size: 32px;
+	font-weight: 800;
+	color: var(--text-primary);
+	letter-spacing: -0.02em;
+	margin-bottom: 8px;
+}
+
+.page-header p {
+	color: var(--text-secondary);
+	font-size: 15px;
+	max-width: 640px;
+}
+
+.cards-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 24px;
+	margin-bottom: 32px;
+}
+
+.role-card {
+	background: var(--surface);
+	border: 2px solid var(--border-light);
+	border-radius: var(--radius-lg);
+	padding: 24px;
+	transition: var(--transition-base);
+	box-shadow: var(--shadow-sm);
+	display: flex;
+	flex-direction: column;
+}
+
+.role-card:hover {
+	border-color: var(--brand-accent);
+}
+
+.card-top {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.role-icon {
+	width: 40px;
+	height: 40px;
+	border-radius: var(--radius-sm);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.role-card .role-icon.admin {
+	border: 2px solid var(--role-admin);
+	background: var(--role-admin-bg);
+	color: var(--role-admin);
+}
+.role-card .role-icon.manager {
+	border: 2px solid var(--role-manager);
+	background: var(--role-manager-bg);
+	color: var(--role-manager);
+}
+.role-card .role-icon.cashier {
+	border: 2px solid var(--role-cashier);
+	background: var(--role-cashier-bg);
+	color: var(--role-cashier);
+}
+.role-card .role-icon.staff {
+	border: 2px solid var(--role-staff);
+	background: var(--role-staff-bg);
+	color: var(--role-staff);
+}
+
+.role-details {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	padding: 2px 2px 2px 8px;
+}
+
+.role-details.admin {
+	background-color: var(--role-admin-bg);
+}
+.role-details.manager {
+	background-color: var(--role-manager-bg);
+}
+.role-details.cashier {
+	background-color: var(--role-cashier-bg);
+}
+.role-details.staff {
+	background-color: var(--role-staff-bg);
+}
+
+.role-name {
+	font-family: "Plus Jakarta Sans", sans-serif;
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--text-primary);
+}
+
+.access-badge {
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--text-secondary);
+}
+
+.creds-box {
+	background: var(--input-bg);
+	border: 1px solid var(--border-light);
+	border-radius: var(--radius-md);
+	padding: 16px;
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.cred-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.cred-label {
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--text-secondary);
+}
+
+.cred-value {
+	font-size: 13px;
+	color: var(--text-primary);
+	font-family: "Fira Code", monospace;
+	background: var(--surface);
+	padding: 6px 12px;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border-light);
+	user-select: all;
+	cursor: pointer;
+	transition: var(--transition-base);
+	text-align: right;
+	position: relative;
+	max-width: 70%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.cred-value:hover {
+	border-color: var(--brand-accent);
+	background: var(--input-bg);
+}
+
+.cred-value.copied {
+	border-color: var(--brand-accent-hover);
+	background: var(--brand-accent-light);
+	color: var(--brand-accent-dark);
+}
+
+.features-list {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: auto;
+	border-top: 1px dashed var(--border-light);
+	padding-top: 16px;
+}
+
+.features-list li {
+	display: flex;
+	align-items: start;
+	gap: 8px;
+	font-size: 13px;
+	color: var(--text-secondary);
+}
+
+.features-list li::before {
+	content: "•";
+	color: var(--brand-accent);
+	font-weight: bold;
+}
+
+.action-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px 24px;
+	background: var(--surface);
+	border: 1px solid var(--border-light);
+	border-radius: var(--radius-lg);
+	gap: 20px;
+}
+
+.system-note {
+	font-size: 14px;
+	color: var(--text-secondary);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.system-note svg {
+	color: var(--brand-accent);
+	flex-shrink: 0;
+}
+
+.system-note code {
+	background: var(--bg-color);
+	color: var(--text-primary);
+	padding: 4px 8px;
+	border-radius: var(--radius-sm);
+	font-size: 12px;
+	font-family: "Fira Code", monospace;
+	border: 1px solid var(--border-light);
+}
+
+@media (max-width: 900px) {
+	.cards-grid {
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+	.topbar {
+		padding: 0 24px;
+	}
+	.page-body {
+		padding: 32px 16px;
+	}
+	.action-bar {
+		flex-direction: column;
+		align-items: stretch;
+		text-align: left;
+	}
+	.system-note {
+		flex-direction: column;
+		align-items: start;
+		gap: 8px;
+	}
+	.cred-value {
+		max-width: 100%;
+	}
+}

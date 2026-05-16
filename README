@@ -45,7 +45,7 @@ Features
 
 - MVC Architecture (for easy debugg :>>)
   -- check app/ { controllers/ services/ repositories/ views/ }
-  ---=> controllers/ <= handles req and rendering
+  ---=> controllers/ <= handles req and rendering 
   ---=> services/ <= handles logic
   ---=> repositories/ <= handles querying
   ---=> views/ <= pages
@@ -63,3 +63,108 @@ Naming Convention
 
 - Camel Case
 - Every Pages in Controller (start with index;; e.g. indexSales)
+
+==================================================================
+==================================================================
+TODOS:
+------------------------------------------------------------------
+[/] Base Classes
+        [/] Controller.php: 
+                superclass handle extraction of data (rendering)
+                handles auth with access to resource checking
+                redirect func
+        [/] Session.php: 
+                ses_obj
+        [/] Routes.php: 
+                routes_obj and GET_POST handler
+------------------------------------------------------------------
+[/] Entry Point 
+        [/] index.php: 
+                connection and starting point (/public)
+------------------------------------------------------------------
+[/] PDO Connection and .Env 
+        [/] Database.php: 
+                create MySQL connection via PDO 
+        [/] config/config.php: 
+                const var
+        [/] config/database.php: 
+                .env processor and db const
+        [/] .env: 
+                secrets
+------------------------------------------------------------------
+[/] Schemas and SQL Queries
+------------------------------------------------------------------
+[/] Migration Scripts and Seeds
+        [/] database/run_migration.php: 
+                create 11 DDL tables
+        [/] database/seed_users.php: 
+                insert 4 roles with users
+------------------------------------------------------------------
+[/] Routes
+        [/] web.php: 
+                helper script that uses routes obj
+------------------------------------------------------------------
+[/] .htaccess
+        [/] :root/.htaccess:
+                url rewrite and redirect to public dir (prevent env acc)
+        [/] public/.htaccess:
+                exe index.php if non static req found
+------------------------------------------------------------------
+[/] Controllers 
+        [/] AuthController.php
+        [/] CategoryController.php
+        [/] DashboardController.php
+        [/] POSController.php
+        [/] ProductController.php
+        [/] SalesController.php
+        [/] StockController.php
+        [/] TestAccountsController.php
+        [/] UserController.php
+        [/] WarehouseController.php
+------------------------------------------------------------------
+[/] Services
+        [/] AuthService.php
+        [/] AuthorizationService.php
+        [/] CategoryService.php
+        [/] DashboardService.php
+        [/] POSService.php
+        [/] ProductService.php
+        [/] SalesService.php
+        [/] StockService.php
+        [/] UserService.php
+        [/] WarehouseService.php
+------------------------------------------------------------------
+[/] Repositories
+        [/] CategoryRepository.php
+        [/] DashboardRepository.php
+        [/] PermissionRepository.php
+        [/] ProductRepository.php
+        [/] ProductWarehouseRepository.php
+        [/] RoleRepository.php
+        [/] SalesRepository.php
+        [/] StockMovementRepository.php
+        [/] StockRepository.php
+        [/] UserRepository.php
+        [/] WarehouseRepository.php
+------------------------------------------------------------------
+[x] views
+        [/] auth
+                [/] login.php:
+                        page where there is no ses detected
+                [/] test-accounts.php:
+                        list of available accounts
+------------------------------------------------------------------
+[x] assets
+        [x] css
+                [/] main.css:
+                        all root var and brand design
+                [/] auth.login.css:
+                        login styles
+                [/] auth.test-accounts.php:
+                        test-accounts styles
+        [x] js
+                [/] auth.test-accounts.js:
+                        handles cred copy function
+        [x] fonts
+                [x] Plus Jakarta Sans
+                        still require to dl 

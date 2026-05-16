@@ -1,25 +1,17 @@
 <?php
-/**
- * StockRepository (Refactored)
- * Uses: Stored Procedures for ACID transactions
- * Philosophy: Database ensures data integrity
- */
+
 class StockRepository
 {
-    private $db;
+    private PDO $db;
 
-    public function __construct($db)
+    public function __construct(PDO $db)
     {
         $this->db = $db;
     }
 
-    /**
-     * Adjust stock using stored procedure
-     * ACID transaction with automatic audit logging
-     */
     public function adjustStock($productId, $warehouseId, $type, $quantity, $userId, $notes = '')
     {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             CALL sp_adjust_stock(
                 :product_id,
                 :warehouse_id,
@@ -31,8 +23,8 @@ class StockRepository
                 @status,
                 @message
             )
-        ");
-        
+        ');
+
         $stmt->bindValue(':product_id', $productId, PDO::PARAM_INT);
         $stmt->bindValue(':warehouse_id', $warehouseId, PDO::PARAM_INT);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
@@ -40,116 +32,91 @@ class StockRepository
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':notes', $notes, PDO::PARAM_STR);
         $stmt->execute();
-        
-        $result = $this->db->query("
+
+        $result = $this->db->query('
             SELECT @new_quantity AS new_quantity,
                    @status AS status,
                    @message AS message
-        ")->fetch(PDO::FETCH_ASSOC);
-        
+        ')->fetch(PDO::FETCH_ASSOC);
+
         return $result;
     }
 
-    /**
-     * Get low stock items using VIEW
-     * Database handles filtering and calculations
-     */
     public function getLowStock()
     {
-        $stmt = $this->db->query("
+        $stmt = $this->db->query('
             SELECT * FROM vw_low_stock_alert
             ORDER BY stock_status DESC, units_below_threshold DESC
-        ");
+        ');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get warehouse stock summary using VIEW
-     * Database handles aggregations
-     */
     public function getWarehouseSummary()
     {
-        $stmt = $this->db->query("
+        $stmt = $this->db->query('
             SELECT * FROM vw_warehouse_stock_summary
             ORDER BY total_inventory_value DESC
-        ");
+        ');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get stock movements using VIEW
-     * Database handles JOINs
-     */
     public function getMovements($limit = 100, $offset = 0)
     {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT * FROM vw_stock_movements_detailed
             LIMIT :limit OFFSET :offset
-        ");
+        ');
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get movements by product
-     */
     public function getMovementsByProduct($productId, $limit = 50)
     {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT * FROM vw_stock_movements_detailed
             WHERE product_id = :product_id
             ORDER BY movement_date DESC
             LIMIT :limit
-        ");
+        ');
         $stmt->bindValue(':product_id', (int)$productId, PDO::PARAM_INT);
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get movements by warehouse
-     */
     public function getMovementsByWarehouse($warehouseId, $limit = 50)
     {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT * FROM vw_stock_movements_detailed
             WHERE warehouse_id = :warehouse_id
             ORDER BY movement_date DESC
             LIMIT :limit
-        ");
+        ');
         $stmt->bindValue(':warehouse_id', (int)$warehouseId, PDO::PARAM_INT);
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get current stock level
-     */
     public function getStock($productId, $warehouseId)
     {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT * FROM product_warehouse 
             WHERE product_id = ? AND warehouse_id = ?
-        ");
+        ');
         $stmt->execute([$productId, $warehouseId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Update stock thresholds
-     */
     public function updateThresholds($productId, $warehouseId, $minStock, $maxStock)
     {
-        // Trigger will validate min <= max
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             UPDATE product_warehouse 
             SET min_stock = ?, max_stock = ? 
             WHERE product_id = ? AND warehouse_id = ?
-        ");
+        ');
         $stmt->execute([$minStock, $maxStock, $productId, $warehouseId]);
     }
 }
