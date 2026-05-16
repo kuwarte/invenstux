@@ -6,11 +6,10 @@ require_once __DIR__ . '/../Services/AuthService.php';
 
 class AuthController extends Controller
 {
- 
     public function __construct(PDO $db)
     {
         parent::__construct($db);
-        
+
         $this->authService = new AuthService($db);
     }
 
@@ -20,6 +19,8 @@ class AuthController extends Controller
             header('Location: /dashboard');
             exit;
         }
+
+        $systemStats = $this->authService->getPublicSystemStats();
         require_once __DIR__ . '/../Views/auth/login.php';
     }
 

@@ -1,3 +1,7 @@
+<?php
+$systemStats = $systemStats ?? [];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,15 +96,15 @@
 
             <div class="panel-stats">
                 <div class="stat-item">
-                    <div class="stat-num">2</div>
-                    <div class="stat-label">Businesses</div>
+                    <div class="stat-num"><?= $systemStats['warehouses']; ?></div>
+                    <div class="stat-label">Warehouses</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-num">99.9%</div>
+                    <div class="stat-num"><?= htmlspecialchars($systemStats['uptime']); ?></div>
                     <div class="stat-label">Uptime</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-num">50</div>
+                    <div class="stat-num"><?= number_format($systemStats['transactions']); ?></div>
                     <div class="stat-label">Transactions</div>
                 </div>
             </div>

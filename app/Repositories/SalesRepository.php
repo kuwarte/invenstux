@@ -9,12 +9,18 @@ class SalesRepository
         $this->db = $db;
     }
 
+    public function getTotalSalesCount(): int
+    {
+        $stmt = $this->db->query('SELECT COUNT(*) FROM sales');
+        return (int) $stmt->fetchColumn();
+    }
+
     public function processSale(
         int $userId,
         string $cartJson,
         float $paymentAmount
     ): array {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             CALL sp_process_sale(
                 :user_id,
                 :cart_json,
@@ -25,7 +31,7 @@ class SalesRepository
                 @status,
                 @message
             )
-        ");
+        ');
 
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':cart_json', $cartJson);
@@ -33,19 +39,19 @@ class SalesRepository
 
         $stmt->execute();
 
-        return $this->db->query("
+        return $this->db->query('
             SELECT
                 @sale_id AS sale_id,
                 @total_amount AS total_amount,
                 @change_amount AS change_amount,
                 @status AS status,
                 @message AS message
-        ")->fetch(PDO::FETCH_ASSOC);
+        ')->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getSaleById(int $saleId): ?array
     {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT
                 s.id AS sale_id,
                 s.user_id,
@@ -69,7 +75,7 @@ class SalesRepository
                 s.payment_amount,
                 s.created_at,
                 u.full_name
-        ");
+        ');
 
         $stmt->execute([$saleId]);
 
@@ -86,7 +92,7 @@ class SalesRepository
 
     public function getSaleItems(int $saleId): array
     {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT
                 si.*,
                 p.name AS product_name,
@@ -96,7 +102,7 @@ class SalesRepository
             INNER JOIN products p
                 ON si.product_id = p.id
             WHERE si.sale_id = ?
-        ");
+        ');
 
         $stmt->execute([$saleId]);
 
@@ -107,11 +113,11 @@ class SalesRepository
         int $limit = 50,
         int $offset = 0
     ): array {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT *
             FROM vw_sales_dashboard
             LIMIT :limit OFFSET :offset
-        ");
+        ');
 
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -123,21 +129,21 @@ class SalesRepository
 
     public function getFiltered(string $dateFrom, string $dateTo): array
     {
-        $sql = "SELECT * FROM vw_sales_dashboard WHERE 1=1";
+        $sql = 'SELECT * FROM vw_sales_dashboard WHERE 1=1';
         $params = [];
-        
+
         if (!empty($dateFrom)) {
-            $sql .= " AND sale_date_only >= ?";
+            $sql .= ' AND sale_date_only >= ?';
             $params[] = $dateFrom;
         }
-        
+
         if (!empty($dateTo)) {
-            $sql .= " AND sale_date_only <= ?";
+            $sql .= ' AND sale_date_only <= ?';
             $params[] = $dateTo;
         }
-        
-        $sql .= " ORDER BY sale_date DESC LIMIT 100";
-        
+
+        $sql .= ' ORDER BY sale_date DESC LIMIT 100';
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -145,7 +151,7 @@ class SalesRepository
 
     public function getTodayStats(): array
     {
-        $stmt = $this->db->query("
+        $stmt = $this->db->query('
             SELECT
                 COUNT(DISTINCT s.id) AS total_sales,
                 COALESCE(SUM(si.quantity * si.price), 0) AS total_revenue,
@@ -155,7 +161,7 @@ class SalesRepository
             LEFT JOIN sale_items si
                 ON s.id = si.sale_id
             WHERE DATE(s.created_at) = CURDATE()
-        ");
+        ');
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -164,7 +170,7 @@ class SalesRepository
         int $limit = 10,
         int $days = 30
     ): array {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT
                 p.id,
                 p.name,
@@ -181,7 +187,7 @@ class SalesRepository
             GROUP BY p.id, p.name, p.sku
             ORDER BY total_sold DESC
             LIMIT :limit
-        ");
+        ');
 
         $stmt->bindValue(':days', $days, PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
@@ -194,12 +200,12 @@ class SalesRepository
     public function getDailySalesSummary(
         int $days = 30
     ): array {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT *
             FROM vw_daily_sales_summary
             WHERE sale_date >= DATE_SUB(CURDATE(), INTERVAL :days DAY)
             ORDER BY sale_date DESC
-        ");
+        ');
 
         $stmt->bindValue(':days', $days, PDO::PARAM_INT);
 
@@ -212,13 +218,13 @@ class SalesRepository
         string $startDate,
         string $endDate
     ): array {
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT *
             FROM vw_sales_dashboard
             WHERE sale_date_only
                 BETWEEN :start_date AND :end_date
             ORDER BY sale_date DESC
-        ");
+        ');
 
         $stmt->bindValue(':start_date', $startDate);
         $stmt->bindValue(':end_date', $endDate);
@@ -240,7 +246,7 @@ class SalesRepository
             ];
         }
 
-        $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare('
             SELECT
                 pw.quantity,
                 p.is_active,
@@ -250,7 +256,7 @@ class SalesRepository
                 ON pw.product_id = p.id
             WHERE pw.product_id = ?
             AND pw.warehouse_id = ?
-        ");
+        ');
 
         $stmt->execute([
             $productId,
