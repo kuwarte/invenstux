@@ -180,6 +180,10 @@ Naming Convention
                         page where there is no ses detected
                 [/] test-accounts.php:
                         list of available accounts
+        [/] layouts
+                [/] main.php
+                        page rendered by view() in controller to show
+                        sidebar with content
 ------------------------------------------------------------------
 [x] assets
         [x] css
@@ -187,11 +191,15 @@ Naming Convention
                         all root var and brand design
                 [/] auth.login.css:
                         login styles
-                [/] auth.test-accounts.php:
+                [/] auth.test-accounts.css:
                         test-accounts styles
+                [/] layouts.main.css:
+                        main layout sidebar styles
         [x] js
                 [/] auth.test-accounts.js:
-                        handles cred copy function
+                        handles cred copy function for appending class name
+                [/] layouts.main.js
+                        handles function for hamburger button and mobile responsiveness
         [x] fonts
                 [x] Plus Jakarta Sans
                         still require to dl 
