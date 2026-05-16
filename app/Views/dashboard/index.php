@@ -15,12 +15,10 @@
         --radius-md: 10px;
         --radius-lg: 16px;
         
-        /* Added subtle shadows for depth */
         --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     }
 
-    /* ── Dashboard Base ── */
     .dashboard-wrapper {
         font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
         max-width: 1440px;
@@ -34,7 +32,6 @@
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Page header ── */
     .dash-header {
         display: flex;
         justify-content: space-between;
@@ -87,7 +84,6 @@
         border-color: #d1d5db;
     }
 
-    /* Target Filter Button Active State Variable Accent */
     .btn-ghost.active-filter {
         background: var(--brand-accent-light);
         border-color: var(--brand-accent);
@@ -114,7 +110,6 @@
         background: var(--brand-accent-hover);
     }
 
-    /* ── Stat cards ── */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -208,7 +203,6 @@
         color: var(--brand-accent-dark);
     }
 
-    /* ── Data tables ── */
     .data-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -260,7 +254,6 @@
 
     .card-link:hover { color: var(--brand-accent-hover); }
 
-    /* Table Typography & Spacing */
     .table-custom {
         width: 100%;
         border-collapse: collapse;
@@ -291,7 +284,6 @@
 
     .table-custom tr:last-child td { border-bottom: none; }
 
-    /* Rank Badges - Utilizing primary accent to signify hierarchy */
     .rank-num {
         display: inline-flex;
         align-items: center;
@@ -311,7 +303,6 @@
     .rank-2 { background: var(--brand-accent); color: #fff; }
     .rank-3 { background: var(--brand-accent-light); color: var(--brand-accent-dark); }
 
-    /* Product Info Cells */
     .product-cell  { display: flex; align-items: center; }
     .product-info  { min-width: 0; }
     .product-name  { font-weight: 600; color: var(--text-primary); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -327,7 +318,6 @@
     .low-stock:hover {
         background-color: var(--error-bg);
     }
-    /* Stock rows */
     .stock-cell { display: flex; align-items: center; gap: 12px;  }
 
     .stock-name { font-weight: 600; font-size: 14px; color: var(--text-primary); }
@@ -346,7 +336,6 @@
         border-radius: 20px;
     }
 
-    /* Empty state */
     .empty-state { 
         padding: 64px 24px; 
         text-align: center;

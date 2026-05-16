@@ -77,9 +77,11 @@ body.sidebar-open {
 	flex: 1;
 	padding: 12px 10px;
 	overflow-y: auto;
+	min-height: 0;
 }
 
 .menu-divider {
+	list-style: none;
 	font-size: 10px;
 	font-weight: 700;
 	text-transform: uppercase;
@@ -87,6 +89,7 @@ body.sidebar-open {
 	color: var(--text-secondary);
 	padding: 16px 10px 6px;
 	opacity: 0.7;
+	pointer-events: none;
 }
 
 .sidebar-menu {
@@ -109,6 +112,7 @@ body.sidebar-open {
 }
 
 .sidebar-menu li a .nav-icon {
+	flex-shrink: 0;
 	width: 34px;
 	height: 34px;
 	border-radius: 8px;
@@ -184,6 +188,13 @@ body.sidebar-open {
 .user-info {
 	flex: 1;
 	min-width: 0;
+}
+
+.user-name,
+.user-role {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .user-name {
@@ -426,6 +437,7 @@ body.sidebar-open {
 		width: 280px;
 		transform: translateX(-100%);
 		box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+		will-change: transform;
 	}
 
 	.sidebar.open {

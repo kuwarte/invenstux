@@ -16,31 +16,19 @@
 	position: relative;
 }
 
-.site-header .topbar {
+.site-header {
 	background: transparent;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 	position: relative;
 	z-index: 10;
 }
 
-.site-header .topbar-brand {
+.site-header {
 	color: #ffffff !important;
 }
 
 .site-header .topbar-brand span {
 	color: var(--brand-accent-light);
-}
-
-.site-header .btn-secondary {
-	color: #ffffff !important;
-	background: rgba(255, 255, 255, 0.1);
-	border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.site-header .btn-secondary:hover {
-	background: rgba(255, 255, 255, 0.2);
-	border-color: #ffffff;
-	color: #ffffff;
 }
 
 .hero-wave-section {

@@ -1,7 +1,11 @@
 <?php
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$segments = array_filter(explode('/', trim($uri, '/')));
-$last = end($segments);
+$uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+$segments = array_filter(explode('/', $uri));
+
+$currentPage = $segments[0] ?? 'dashboard';
+$pageTitle = ($currentPage === 'pos')
+    ? 'POS'
+    : ucfirst($currentPage);
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +32,7 @@ $last = end($segments);
         <nav class="sidebar-nav">
             <ul class="sidebar-menu">
                 <li>
-                    <a href="/dashboard" class="<?= strpos($_SERVER['REQUEST_URI'], 'dashboard') !== false ? 'active' : '' ?>">
+                    <a href="/dashboard" class="<?= $currentPage === 'dashboard' ? 'active' : '' ?>">
                         <span class="nav-icon">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                         </span>
@@ -42,11 +46,11 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
 ?>
 
                 <?php if ($authzService->canAny(['manage_products', 'manage_stock', 'manage_warehouses', 'manage_categories', 'access_pos'])): ?>
-                    <div class="menu-divider">Operations</div>
+                    <li class="menu-divider">Operations</li>
                     
                     <?php if ($authzService->can('access_pos')): ?>
                     <li>
-                        <a href="/pos" class="<?= strpos($_SERVER['REQUEST_URI'], 'pos') !== false ? 'active' : '' ?>">
+                        <a href="/pos" class="<?= $currentPage === 'pos' ? 'active' : '' ?>">
                             <span class="nav-icon">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
                             </span>
@@ -57,7 +61,7 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
                     
                     <?php if ($authzService->can('manage_products')): ?>
                     <li>
-                        <a href="/products" class="<?= strpos($_SERVER['REQUEST_URI'], 'products') !== false ? 'active' : '' ?>">
+                        <a href="/products" class="<?= $currentPage === 'products' ? 'active' : '' ?>">
                             <span class="nav-icon">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
                             </span>
@@ -68,7 +72,7 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
                     
                     <?php if ($authzService->can('manage_categories')): ?>
                     <li>
-                        <a href="/categories" class="<?= strpos($_SERVER['REQUEST_URI'], 'categories') !== false ? 'active' : '' ?>">
+                        <a href="/categories" class="<?= $currentPage === 'categories' ? 'active' : '' ?>">
                             <span class="nav-icon">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
                             </span>
@@ -79,7 +83,7 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
                     
                     <?php if ($authzService->can('manage_stock')): ?>
                     <li>
-                        <a href="/stocks" class="<?= strpos($_SERVER['REQUEST_URI'], 'stocks') !== false ? 'active' : '' ?>">
+                        <a href="/stocks" class="<?= $currentPage === 'stocks' ? 'active' : '' ?>">
                             <span class="nav-icon">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                             </span>
@@ -90,7 +94,7 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
                     
                     <?php if ($authzService->can('manage_warehouses')): ?>
                     <li>
-                        <a href="/warehouses" class="<?= strpos($_SERVER['REQUEST_URI'], 'warehouses') !== false ? 'active' : '' ?>">
+                        <a href="/warehouses" class="<?= $currentPage === 'warehouses' ? 'active' : '' ?>">
                             <span class="nav-icon">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                             </span>
@@ -101,9 +105,9 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
                 <?php endif; ?>
 
                 <?php if ($authzService->can('view_reports')): ?>
-                    <div class="menu-divider">Reporting</div>
+                    <li class="menu-divider">Reporting</li>
                     <li>
-                        <a href="/sales" class="<?= strpos($_SERVER['REQUEST_URI'], 'sales') !== false ? 'active' : '' ?>">
+                        <a href="/sales" class="<?= $currentPage === 'sales' ? 'active' : '' ?>">
                             <span class="nav-icon">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="2" y="5" width="20" height="14" rx="2"></rect>
@@ -117,9 +121,9 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
                 <?php endif; ?>
 
                 <?php if ($authzService->can('manage_users')): ?>
-                    <div class="menu-divider">Administration</div>
+                    <li class="menu-divider">Administration</li>
                     <li>
-                        <a href="/users" class="<?= strpos($_SERVER['REQUEST_URI'], 'users') !== false ? 'active' : '' ?>">
+                        <a href="/users" class="<?= $currentPage === 'users' ? 'active' : '' ?>">
                             <span class="nav-icon">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                             </span>
@@ -166,7 +170,8 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
                     <span class="brand-crumb">Invenstux</span>
                     <span class="sep brand-crumb">›</span>
                     <span class="current">
-   <?= ($last === 'pos') ? 'POS' : ucfirst($last ?: 'Dashboard') ?></span>
+                        <?= htmlspecialchars($pageTitle) ?>
+                    </span>     
                 </div>
             </div>
             <div class="topbar-right">
