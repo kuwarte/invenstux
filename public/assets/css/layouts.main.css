@@ -1,6 +1,6 @@
 :root {
 	--sidebar-width: 248px;
-	--topbar-height: 56px;
+	--topbar-height: 48px;
 }
 
 body {
@@ -49,7 +49,7 @@ body.sidebar-open {
 }
 
 .sidebar-brand {
-	padding: 20px 20px 16px;
+	padding: 18px 16px;
 	border-bottom: 1px solid var(--border-light);
 }
 
@@ -57,7 +57,7 @@ body.sidebar-open {
 	font-family: "Plus Jakarta Sans", sans-serif;
 	font-size: 30px;
 	font-weight: 800;
-	letter-spacing: -0.03em;
+	letter-spacing: -0.04em;
 	color: var(--text-primary);
 	text-decoration: none;
 }
@@ -76,6 +76,7 @@ body.sidebar-open {
 .sidebar-nav {
 	flex: 1;
 	padding: 12px 10px;
+	padding-top: 14px;
 	overflow-y: auto;
 	min-height: 0;
 }
@@ -107,7 +108,7 @@ body.sidebar-open {
 	font-weight: 800;
 	border-radius: var(--radius-md);
 	margin-bottom: 1px;
-	transition: all 0.15s ease;
+	transition: all 0.2s ease;
 	border: 1px solid transparent;
 }
 
@@ -147,6 +148,7 @@ body.sidebar-open {
 
 .sidebar-menu li a.active .nav-icon svg {
 	stroke: #fff;
+	stroke-width: 2.2;
 }
 
 .sidebar-footer {
@@ -162,7 +164,7 @@ body.sidebar-open {
 	padding: 8px 10px;
 	border-radius: var(--radius-md);
 	cursor: pointer;
-	transition: background 0.15s;
+	transition: all 0.2s ease;
 	width: 100%;
 }
 
