@@ -37,7 +37,7 @@ class SalesController extends Controller
         echo json_encode($sales);
     }
 
-    public function show(): void
+    public function indexView(): void
     {
         $saleId = (int) ($_GET['id'] ?? 0);
 
