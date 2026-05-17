@@ -1,22 +1,15 @@
-/* ═══════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════ */
 let cart = [];
 let allProducts = [];
 let filteredProducts = [];
 
 let confirmTimeout = null;
 
-// Auto-load products if smart warehouse is set
 window.addEventListener("DOMContentLoaded", () => {
 	if (currentWarehouse) {
 		loadProducts(currentWarehouse);
 	}
 });
 
-/* ═══════════════════════════════════════════════
-   TOAST
-═══════════════════════════════════════════════ */
 function showToast(message, type = "error") {
 	const container = document.getElementById("toastContainer");
 	const toast = document.createElement("div");
@@ -29,20 +22,15 @@ function showToast(message, type = "error") {
 	}, 3500);
 }
 
-/* ═══════════════════════════════════════════════
-   WAREHOUSE — keep all 3 selects in sync
-═══════════════════════════════════════════════ */
 function syncWarehouse(value, source) {
 	if (value === currentWarehouse) return;
 	currentWarehouse = value;
 
-	// Sync all selects
 	["warehouseSelect", "warehouseSelectCart", "warehouseSelectDrawer"].forEach((id) => {
 		const el = document.getElementById(id);
 		if (el && el.value !== value) el.value = value;
 	});
 
-	// Clear cart and reload products
 	cart = [];
 	renderCart();
 
@@ -73,9 +61,6 @@ async function loadProducts(warehouseId) {
 	}
 }
 
-/* ═══════════════════════════════════════════════
-   PRODUCT LIST RENDERING
-═══════════════════════════════════════════════ */
 function renderProductsState(state) {
 	const list = document.getElementById("productList");
 	if (state === "loading") {
@@ -122,10 +107,8 @@ function renderProducts(items) {
 				.join("")
 				.toUpperCase();
 
-			// Escape single quotes carefully for the inline JS execution context
 			const escapedName = p.name.replace(/'/g, "\\'");
 
-			// Build click action outside the main template literal string to prevent nesting bugs
 			const clickAction = inStock
 				? `addToCart(${p.id}, '${escapedName}', ${p.unit_cost}, '${p.sku}', ${p.stock})`
 				: "void(0)";
@@ -145,12 +128,9 @@ function renderProducts(items) {
             </div>
         </div>`;
 		})
-		.join(""); // Added .join('') to prevent array commas from rendering in your HTML output
+		.join("");
 }
 
-/* ═══════════════════════════════════════════════
-   SEARCH
-═══════════════════════════════════════════════ */
 function handleSearch(query) {
 	const q = query.toLowerCase().trim();
 	if (!currentWarehouse) return;
@@ -162,9 +142,6 @@ function handleSearch(query) {
 	renderProducts(filteredProducts);
 }
 
-/* ═══════════════════════════════════════════════
-   CART ACTIONS
-═══════════════════════════════════════════════ */
 function addToCart(productId, name, price, sku, stock) {
 	if (!currentWarehouse) {
 		showToast("Please select a source warehouse first", "error");
@@ -210,22 +187,17 @@ function popCartCount() {
 	});
 }
 
-/* ═══════════════════════════════════════════════
-   CART RENDERING
-═══════════════════════════════════════════════ */
 function renderCart() {
 	const count = cart.reduce((s, i) => s + i.quantity, 0);
 	const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
 	const totalFmt = "₱" + total.toLocaleString(undefined, { minimumFractionDigits: 2 });
 
-	// Update counts
 	["cartCountMain", "cartCountDrawer"].forEach((id) => {
 		const el = document.getElementById(id);
 		if (el) el.textContent = count;
 	});
 	document.getElementById("fabBadge").textContent = count;
 
-	// Update totals
 	["cartTotalMain", "cartTotalDrawer"].forEach((id) => {
 		const el = document.getElementById(id);
 		if (el) el.textContent = totalFmt;
@@ -286,9 +258,6 @@ function renderCart() {
 	recalcChange();
 }
 
-/* ═══════════════════════════════════════════════
-   PAYMENT / CHANGE
-═══════════════════════════════════════════════ */
 function syncPayment(value, source) {
 	// Sync both payment inputs
 	const other = source === "main" ? "paymentAmountDrawer" : "paymentAmountMain";
@@ -329,9 +298,6 @@ function recalcChange() {
 	});
 }
 
-/* ═══════════════════════════════════════════════
-   CHECKOUT
-═══════════════════════════════════════════════ */
 async function handleCheckout(source) {
 	const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
 	const paymentEl = document.getElementById(
@@ -347,7 +313,6 @@ async function handleCheckout(source) {
 		return;
 	}
 
-	// Two-step confirm
 	if (btn.classList.contains("ready")) {
 		btn.textContent = "Tap again to confirm";
 		btn.className = "checkout-btn confirm";
@@ -364,7 +329,6 @@ async function handleCheckout(source) {
 	btn.className = "checkout-btn";
 
 	try {
-		// Add warehouse_id to each cart item
 		const cartWithWarehouse = cart.map((item) => ({
 			...item,
 			warehouse_id: currentWarehouse,
@@ -397,9 +361,6 @@ async function handleCheckout(source) {
 	}
 }
 
-/* ═══════════════════════════════════════════════
-   MOBILE CART DRAWER
-═══════════════════════════════════════════════ */
 function openCartDrawer() {
 	document.getElementById("cartDrawer").classList.add("open");
 	document.getElementById("cartBackdrop").classList.add("show");
@@ -416,9 +377,6 @@ document.addEventListener("keydown", (e) => {
 	if (e.key === "Escape") closeCartDrawer();
 });
 
-/* ═══════════════════════════════════════════════
-   UTILS
-═══════════════════════════════════════════════ */
 function escHtml(str) {
 	return String(str)
 		.replace(/&/g, "&amp;")

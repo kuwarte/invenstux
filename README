@@ -194,6 +194,30 @@ Naming Convention
                 [/] top-revenue.php:
                         admin dashboard containing a maximize top rev page
                         querying the top 5 (limit 5)
+        [/] users
+                [/] index.php:
+                        contains page for user management (admin-acc only)
+                [/] create.php:
+                        for creation of user
+                [/] edit.php:
+                        for edit user cred
+                [/] settings.php:
+                        can change pass (universal-acc)
+        [/] sales
+                [/] pos.php:
+                        calls stored procedure for proper transact and updates product_warehouse
+                        relations
+                        multistore/warehouse POS
+                [/] view.php:
+                        max sales records
+                [/] index.php:
+                        main list of history, render full sales audit
+                [/] receipt.php:
+                        contains functional and printable htmltopdf receipt
+        [x] products
+        [x] stocks
+        [x] warehouses
+        [x] categories
 ------------------------------------------------------------------
 [x] assets
         [x] css
@@ -209,6 +233,10 @@ Naming Convention
                         layout for admin dashboard
                 [/] dashboard.top-revenue.css:
                         layout for max top-rev dashboard
+                [/] users.forms.css
+                        style for forms (create, edit and settings)
+                [/] users.index.css
+                        style for main user management page
         [x] js
                 [/] auth.test-accounts.js:
                         handles cred copy function for appending class name
@@ -217,6 +245,19 @@ Naming Convention
                 [/] dashboard.index.js:
                         uses third party library html->pdf
                         for report generation
+                [/] sales.pos.js:
+                        handles rendering for products, warehouses, and toast
+                        handles syncing for warehouses
+                        handles loading of products
+                        handles product state
+                        handles search/filtering via AJAX
+                        handles add to cart
+                        handles qty adjustment, remove to cart, render cart, syncing payments
+                        while calc change, handles checkout with payment validation and 2step confirmation
+                        and calls /pos/checkout that handles stored procedure
+                        handles responsive cart drawer
+                [/] sales.index.js
+                        handles filters, sales rendering, and filter clearing
         [x] fonts
                 [x] Plus Jakarta Sans
                         still require to dl 
