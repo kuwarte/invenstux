@@ -218,7 +218,9 @@ Naming Convention
                 [/] index.php
                 [/] edit.php
                 [/] create.php
-        [x] stocks
+        [/] stocks
+                [/] index.php
+                [/] thresholds.php
         [/] warehouses
                 [/] index.php
                 [/] edit.php
