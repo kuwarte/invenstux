@@ -1,40 +1,42 @@
-/* Layout & Typography */
-.page-header {
-	margin-bottom: 2rem;
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
+.form-wrapper {
+	max-width: 1440px;
+	margin: 0 auto;
+	padding: 24px;
+	color: var(--text-primary);
+	font-family: var(--font-family);
+	animation: dashIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.page-title {
-	font-family: var(--font-heading, "Plus Jakarta Sans", sans-serif);
-	font-size: 1.5rem;
-	font-weight: 800;
-	color: var(--text-primary); /* Fixed */
-	margin: 0 0 0.25rem 0;
-	letter-spacing: -0.02em;
+@keyframes dashIn {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
-.text-secondary {
-	color: var(--text-muted);
-	font-size: 0.9rem;
-	margin: 0;
-	font-weight: 400;
-}
-
-/* Cards & Containers */
 .card {
 	background: var(--surface);
-	border: 1px solid var(--border-light); /* Fixed */
+	border: 1px solid var(--border-light);
 	border-radius: var(--radius-lg);
 	box-shadow: var(--shadow-sm);
 	overflow: hidden;
 	max-width: 600px;
+	transition:
+		transform var(--transition-base),
+		box-shadow var(--transition-base);
+}
+
+.card:hover {
+	box-shadow: var(--shadow-md);
 }
 
 .card-header {
 	padding: 1.25rem 1.5rem;
-	border-bottom: 1px solid var(--border-light); /* Fixed */
+	border-bottom: 1px solid var(--border-light);
 	background: var(--surface);
 }
 
@@ -42,7 +44,7 @@
 	font-family: var(--font-heading, "Plus Jakarta Sans", sans-serif);
 	font-size: 1.1rem;
 	font-weight: 700;
-	color: var(--text-primary); /* Fixed */
+	color: var(--text-primary);
 	margin: 0;
 }
 
@@ -57,19 +59,19 @@
 }
 
 .section-title {
+	font-family: var(--font-heading, "Plus Jakarta Sans", sans-serif);
 	font-size: 1.1rem;
 	font-weight: 700;
-	color: var(--text-primary); /* Fixed */
+	color: var(--text-primary);
 	margin: 0 0 0.5rem 0;
 }
 
 .section-desc {
 	font-size: 0.85rem;
-	color: var(--text-muted);
+	color: var(--text-secondary);
 	margin: 0 0 1.5rem 0;
 }
 
-/* Forms */
 .form-stack {
 	display: flex;
 	flex-direction: column;
@@ -85,6 +87,7 @@
 .form-group {
 	margin-bottom: 1.5rem;
 }
+
 .form-stack .form-group {
 	margin-bottom: 0;
 }
@@ -93,7 +96,7 @@
 	display: block;
 	font-size: 0.85rem;
 	font-weight: 600;
-	color: var(--text-primary); /* Fixed */
+	color: var(--text-primary);
 	margin-bottom: 0.5rem;
 }
 
@@ -101,24 +104,26 @@
 	width: 100%;
 	padding: 0.65rem 1rem;
 	border-radius: var(--radius-sm);
-	border: 1px solid var(--border-light); /* Fixed */
+	border: 1px solid var(--border-light);
 	font-family: var(--font-sans, "Inter", sans-serif);
 	font-size: 0.9rem;
-	color: var(--text-primary); /* Fixed */
+	color: var(--text-primary);
 	background: var(--surface);
-	transition: all 0.2s ease;
+	transition:
+		border-color var(--transition-base),
+		box-shadow var(--transition-base);
 	box-sizing: border-box;
 }
 
 .form-input:focus {
 	outline: none;
-	border-color: var(--brand-accent); /* Fixed */
-	box-shadow: 0 0 0 3px var(--brand-accent-light); /* Fixed */
+	border-color: var(--brand-accent);
+	box-shadow: 0 0 0 3px var(--brand-accent-light);
 }
 
 .form-section {
 	padding: 1.5rem;
-	background: var(--bg-color); /* Fixed */
+	background: var(--bg-color);
 	border-radius: var(--radius-md);
 	margin-bottom: 1.5rem;
 }
@@ -126,7 +131,7 @@
 .form-section-title {
 	font-size: 0.9rem;
 	font-weight: 600;
-	color: var(--text-primary); /* Fixed */
+	color: var(--text-primary);
 	margin-bottom: 1rem;
 	display: flex;
 	align-items: center;
@@ -143,31 +148,31 @@
 .form-actions {
 	display: flex;
 	gap: 1rem;
-	border-top: 1px solid var(--border-light); /* Fixed */
+	border-top: 1px solid var(--border-light);
 	padding-top: 1.5rem;
 	margin-top: 2rem;
 }
+
 .form-stack .form-actions {
 	margin-top: 0.5rem;
 	padding-top: 0;
 	border-top: none;
 }
 
-/* Profile Specifics (Settings) */
 .profile-info-box {
 	display: flex;
 	align-items: center;
 	gap: 1rem;
 	padding: 1rem;
-	background: var(--bg-color); /* Fixed */
+	background: var(--bg-color);
 	border-radius: var(--radius-md);
 }
 
 .profile-avatar {
 	width: 48px;
 	height: 48px;
-	border-radius: 10px;
-	background: var(--brand-accent); /* Fixed */
+	border-radius: var(--radius-md);
+	background: var(--brand-accent);
 	color: white;
 	display: flex;
 	align-items: center;
@@ -179,7 +184,7 @@
 
 .profile-name {
 	font-weight: 600;
-	color: var(--text-primary); /* Fixed */
+	color: var(--text-primary);
 	font-size: 0.95rem;
 }
 
@@ -189,57 +194,51 @@
 	margin-top: 2px;
 }
 
-/* Buttons */
+.header-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-shrink: 0;
+}
+
 .btn {
+	background-color: var(--brand-accent);
+	color: #ffffff;
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	margin-top: 32px;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
 	padding: 0.6rem 1.1rem;
-	border-radius: var(--radius-md);
-	font-family: var(--font-sans, "Inter", sans-serif);
+	font-family: "Plus Jakarta Sans", sans-serif;
 	font-size: 0.875rem;
-	font-weight: 600;
-	cursor: pointer;
-	transition: all 0.2s ease;
+	font-weight: 700;
 	border: none;
 	text-decoration: none;
 	box-sizing: border-box;
+	transition: all var(--transition-base);
 }
 
 .btn-primary {
-	background: var(--brand-accent); /* Fixed */
+	background: var(--brand-accent);
 	color: white;
 	box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
 }
 
 .btn-primary:hover {
-	background: var(--brand-accent-hover); /* Fixed */
+	background: var(--brand-accent-hover);
 	transform: translateY(-1px);
-	box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+	box-shadow: var(--shadow-glow);
 }
 
 .btn-white {
 	background: var(--surface);
-	border: 1px solid var(--border-light); /* Fixed */
-	color: var(--text-primary); /* Fixed */
+	border: 1px solid var(--border-light);
+	color: var(--text-primary);
 }
 
 .btn-white:hover {
-	background: var(--bg-color); /* Fixed */
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(8px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-.fade-in {
-	animation: fadeIn 0.4s ease-out forwards;
+	background: var(--bg-color);
 }

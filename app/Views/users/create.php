@@ -1,7 +1,8 @@
 <link rel="stylesheet" href="/assets/css/users.forms.css">
-<div class="fade-in">
+<div class="form-wrapper">
+    <div class="fade-in">
     <header class="page-header">
-        <div>
+        <div class="page-header-group">
             <h1 class="page-title">Create User</h1>
             <p class="text-secondary">Add a new user to the system</p>
         </div>
@@ -48,4 +49,5 @@
             </form>
         </div>
     </div>
+</div>
 </div>

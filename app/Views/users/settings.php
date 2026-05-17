@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="/assets/css/users.forms.css">
 <div class="fade-in">
     <header class="page-header">
-        <div>
+        <div class="page-header-group">
             <h1 class="page-title">Account Settings</h1>
             <p class="text-secondary">Manage your account preferences and security</p>
         </div>

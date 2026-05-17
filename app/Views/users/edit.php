@@ -1,7 +1,8 @@
 <link rel="stylesheet" href="/assets/css/users.forms.css">
+<div class="form-wrapper">
 <div class="fade-in">
     <header class="page-header">
-        <div>
+        <div class="page-header-group">
             <h1 class="page-title">Edit User</h1>
             <p class="text-secondary">Update user information and permissions</p>
         </div>
@@ -58,3 +59,4 @@
         </div>
     </div>
 </div>
+                        </div>
