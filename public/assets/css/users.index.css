@@ -269,6 +269,10 @@
 	box-shadow: var(--shadow-glow);
 }
 
+.btn-primary:active {
+	transform: scale(0.98);
+}
+
 .action-buttons {
 	display: flex;
 	gap: 0.5rem;

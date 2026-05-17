@@ -201,38 +201,6 @@
 	flex-shrink: 0;
 }
 
-.btn {
-	background-color: var(--brand-accent);
-	color: #ffffff;
-	border-radius: var(--radius-md);
-	cursor: pointer;
-	margin-top: 32px;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 8px;
-	padding: 0.6rem 1.1rem;
-	font-family: "Plus Jakarta Sans", sans-serif;
-	font-size: 0.875rem;
-	font-weight: 700;
-	border: none;
-	text-decoration: none;
-	box-sizing: border-box;
-	transition: all var(--transition-base);
-}
-
-.btn-primary {
-	background: var(--brand-accent);
-	color: white;
-	box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-}
-
-.btn-primary:hover {
-	background: var(--brand-accent-hover);
-	transform: translateY(-1px);
-	box-shadow: var(--shadow-glow);
-}
-
 .btn-white {
 	background: var(--surface);
 	border: 1px solid var(--border-light);
