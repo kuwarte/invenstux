@@ -209,6 +209,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			const data = await response.json();
 
+			const viewAllLink = document.querySelector('a[href*="/dashboard/top-revenue"]');
+			if (viewAllLink) {
+				viewAllLink.href = `/dashboard/top-revenue?range=${encodeURIComponent(e.target.value)}`;
+			}
+
 			const updateCard = (idx, label, pill, valText, footerText = null) => {
 				const card = document.querySelector(`.stat-card[data-card-index="${idx}"]`);
 				if (!card) return;

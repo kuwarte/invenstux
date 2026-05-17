@@ -38,6 +38,29 @@ class DashboardRepository
         }
     }
 
+    public function getAllTopProducts(string $range): array
+    {
+        list($dateSql, $params) = $this->buildDateCondition($range);
+
+        $sql = "SELECT 
+                    product_id,
+                    product_name AS name,
+                    product_sku AS sku,
+                    SUM(units_sold) AS total_sold,
+                    COALESCE(SUM(total_item_revenue), 0) AS total_revenue
+                FROM vw_dashboard_sales_stream
+                WHERE {$dateSql}
+                GROUP BY product_id, product_name, product_sku
+                ORDER BY total_revenue DESC"; 
+
+        error_log("Subpage Detailed Query - Range: {$range}");
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
     public function getDashboardData(string $range): array
     {
         $globalStmt = $this->db->query('SELECT * FROM vw_dashboard_global_counters');
@@ -72,19 +95,31 @@ class DashboardRepository
                            ORDER BY total_revenue DESC
                            LIMIT 5";
 
-        error_log("Dashboard Query - Range: {$range}, SQL: {$topProductsSql}");
-        
         $topProductsStmt = $this->db->prepare($topProductsSql);
         $topProductsStmt->execute($params);
         $topProducts = $topProductsStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-        
-        error_log("Dashboard Top Products Result Count: " . count($topProducts));
-        error_log("Dashboard Top Products: " . json_encode($topProducts));
 
         return [
             'globalCounters' => $globalCounters,
             'salesStats'     => $salesStats,
             'topProducts'    => $topProducts
+        ];
+    }
+
+    public function getStats(): array
+    {
+        $sql = "SELECT 
+                    total_products, 
+                    total_warehouses, 
+                    total_categories 
+                FROM vw_dashboard_global_counters 
+                LIMIT 1";
+                
+        $stmt = $this->db->query($sql);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [
+            'total_products' => 0,
+            'total_warehouses' => 0,
+            'total_categories' => 0
         ];
     }
 }

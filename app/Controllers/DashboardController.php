@@ -55,10 +55,11 @@ class DashboardController extends Controller
     public function indexTopRevenue(): void
     {
         $this->authService->requireAuth();
+        $range = $_GET['range'] ?? '30days';
 
-        $topProducts = $this->salesService->getTopSellingProducts(100);
+        $topProducts = $this->dashboardService->getTopProductsByRange($range);
 
-        $this->view('dashboard/top-revenue', compact('topProducts'));
+        $this->view('dashboard/top-revenue', compact('topProducts', 'range'));
     }
 
     public function cashierDashboard(): void

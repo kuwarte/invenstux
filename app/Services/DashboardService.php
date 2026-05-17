@@ -19,6 +19,11 @@ class DashboardService
         return $this->dashboardRepo->getDashboardData($range);
     }
 
+    public function getTopProductsByRange(string $range): array
+    {
+        return $this->dashboardRepo->getAllTopProducts($range);
+    }
+
     public function getStats(): array
     {
         return $this->dashboardRepo->getStats();

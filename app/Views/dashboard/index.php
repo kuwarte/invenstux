@@ -1,5 +1,5 @@
 <?php
-$range = $range ?? [];
+$range = $range ?? "";
 ?>
 
 <main class="dashboard-wrapper">
@@ -23,7 +23,6 @@ $range = $range ?? [];
         </div>
     </header>
 
-    <!-- Key Statistics Grid -->
     <section class="stats-grid">
         <?php
         $rangeLabel = 'Today';
@@ -69,7 +68,6 @@ $range = $range ?? [];
         <?php endforeach; ?>
     </section>
 
-    <!-- Charts Section -->
     <section class="charts-grid">
         <div class="content-card">
             <div class="card-head">
@@ -90,13 +88,11 @@ $range = $range ?? [];
         </div>
     </section>
 
-    <!-- Data Tables Section -->
     <section class="data-grid">
-        <!-- Top Revenue Generators -->
         <div class="content-card">
             <div class="card-head">
                 <h2>Top Revenue Generators</h2>
-                <a href="/dashboard/top-revenue" class="card-link">
+                <a href="/dashboard/top-revenue?range=<?= urlencode($range ?? 'today') ?>" class="card-link">
                     View all
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
                 </a>
