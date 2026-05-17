@@ -26,7 +26,7 @@ class StockController extends Controller
         
         $data = $this->stockService->getStockDashboardData($filters);
 
-        $this->view('stock/index', $data);
+        $this->view('stocks/index', $data);
     }
 
     public function filter(): void
