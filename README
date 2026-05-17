@@ -217,7 +217,9 @@ Naming Convention
         [x] products
         [x] stocks
         [x] warehouses
-        [x] categories
+        [/] categories
+                [/] index.php:
+                        contains list of category with crud modal
 ------------------------------------------------------------------
 [x] assets
         [x] css
@@ -256,8 +258,11 @@ Naming Convention
                         while calc change, handles checkout with payment validation and 2step confirmation
                         and calls /pos/checkout that handles stored procedure
                         handles responsive cart drawer
-                [/] sales.index.js
+                [/] sales.index.js:
                         handles filters, sales rendering, and filter clearing
+                [/] categories.index.js:
+                        handles open and closing of modals (TODO: still using JS filtering, bug on productCount)
+                        
         [x] fonts
                 [x] Plus Jakarta Sans
                         still require to dl 
