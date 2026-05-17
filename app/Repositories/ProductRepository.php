@@ -52,26 +52,29 @@ class ProductRepository
     {
         if ($warehouseId) {
             $stmt = $this->db->prepare("
-                SELECT p.*, c.name as category_name, 
+                SELECT p.id, p.sku, p.name, p.description, p.unit_of_measure, p.unit_cost, p.is_active,
+                       c.name as category_name, c.id as category_id,
+                       :warehouse_id as warehouse_id,
                        COALESCE(pw.quantity, 0) as stock
                 FROM products p 
                 LEFT JOIN categories c ON p.category_id = c.id
                 LEFT JOIN product_warehouse pw 
                        ON p.id = pw.product_id 
-                       AND pw.warehouse_id = ?
-                WHERE COALESCE(pw.quantity, 0) > 0
-                       AND p.is_active = 1
+                       AND pw.warehouse_id = :warehouse_id
+                WHERE p.is_active = 1
                 ORDER BY p.name
             ");
-            $stmt->execute([$warehouseId]);
+            $stmt->bindValue(':warehouse_id', $warehouseId, PDO::PARAM_INT);
+            $stmt->execute();
         } else {
             $stmt = $this->db->query("
-                SELECT p.*, c.name as category_name, 
+                SELECT p.id, p.sku, p.name, p.description, p.unit_of_measure, p.unit_cost, p.is_active,
+                       c.name as category_name, c.id as category_id,
                        COALESCE(pw.quantity, 0) as stock
                 FROM products p 
                 LEFT JOIN categories c ON p.category_id = c.id
                 LEFT JOIN product_warehouse pw ON p.id = pw.product_id
-                       WHERE p.is_active = 1
+                WHERE p.is_active = 1
                 ORDER BY p.name
             ");
         }
@@ -179,6 +182,29 @@ class ProductRepository
         ");
         $searchTerm = "%$query%";
         $stmt->bindValue(':query', $searchTerm, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function searchWithWarehouseStock(string $query, int $warehouseId): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT p.id, p.sku, p.name, p.description, p.unit_of_measure, p.unit_cost, p.is_active,
+                   c.name as category_name, c.id as category_id,
+                   :warehouse_id as warehouse_id,
+                   COALESCE(pw.quantity, 0) as stock
+            FROM products p 
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN product_warehouse pw 
+                   ON p.id = pw.product_id 
+                   AND pw.warehouse_id = :warehouse_id
+            WHERE (p.name LIKE :query OR p.sku LIKE :query)
+                AND p.is_active = 1
+            LIMIT 20
+        ");
+        $searchTerm = "%$query%";
+        $stmt->bindValue(':query', $searchTerm, PDO::PARAM_STR);
+        $stmt->bindValue(':warehouse_id', $warehouseId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

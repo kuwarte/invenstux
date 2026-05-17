@@ -1,3 +1,26 @@
+CREATE VIEW vw_dashboard_global_counters AS
+SELECT 
+    (SELECT COUNT(*) FROM products WHERE is_active = 1) AS total_products,
+    (SELECT COUNT(*) FROM warehouses WHERE is_active = 1) AS total_warehouses,
+    (SELECT COUNT(*) FROM categories) AS total_categories,
+    (SELECT COUNT(*) FROM product_warehouse WHERE quantity <= min_stock AND min_stock > 0) AS critical_low_stock;
+
+CREATE VIEW vw_dashboard_sales_stream AS
+SELECT 
+    s.id AS sale_id,
+    s.created_at AS sale_date,
+    si.product_id,
+    COALESCE(p.name, 'Unknown Product') AS product_name,
+    COALESCE(p.sku, 'N/A') AS product_sku,
+    COALESCE(w.name, 'Unassigned Location') AS warehouse_name,
+    si.quantity AS units_sold,
+    si.price AS unit_price,
+    (si.quantity * si.price) AS total_item_revenue
+FROM sales s
+JOIN sale_items si ON s.id = si.sale_id
+LEFT JOIN products p ON si.product_id = p.id
+LEFT JOIN warehouses w ON si.warehouse_id = w.id;
+
 CREATE VIEW vw_sales_dashboard AS
 SELECT 
     s.id AS sale_id,

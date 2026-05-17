@@ -12,6 +12,7 @@ $router->get('/test-accounts', 'TestAccountsController@index');
 $router->get('/', 'DashboardController@index');
 $router->get('/dashboard', 'DashboardController@index');
 $router->get('/dashboard/top-revenue', 'DashboardController@indexTopRevenue');
+$router->get('/dashboard/filter', 'DashboardController@filter');
 
 // category
 $router->get('/categories', 'CategoryController@index');

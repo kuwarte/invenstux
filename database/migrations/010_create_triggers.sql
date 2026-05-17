@@ -19,7 +19,8 @@ BEGIN
     SELECT quantity INTO v_current_stock
     FROM product_warehouse
     WHERE product_id = NEW.product_id
-      AND warehouse_id = NEW.warehouse_id;
+      AND warehouse_id = NEW.warehouse_id
+    FOR UPDATE;
 
     IF v_current_stock IS NULL OR v_current_stock < NEW.quantity THEN
         SIGNAL SQLSTATE '45000'

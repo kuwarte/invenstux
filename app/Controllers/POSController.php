@@ -71,6 +71,16 @@ class POSController extends Controller
         $query = $_GET['q'] ?? '';
         $warehouseId = isset($_GET['warehouse_id']) ? (int) $_GET['warehouse_id'] : null;
 
+        if (!$query) {
+            echo json_encode(['success' => false, 'message' => 'Search query required']);
+            exit;
+        }
+
+        if (!$warehouseId) {
+            echo json_encode(['success' => false, 'message' => 'Warehouse ID required']);
+            exit;
+        }
+
         try {
             $products = $this->posService->searchProducts($query, $warehouseId);
             echo json_encode(['success' => true, 'products' => $products]);

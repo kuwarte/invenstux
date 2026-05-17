@@ -79,15 +79,12 @@ class POSService
             return [];
         }
 
-        $products = $this->productRepo->search($query);
-
         if ($warehouseId) {
-            return array_filter($products, function($product) use ($warehouseId) {
-                return isset($product['warehouse_id']) && $product['warehouse_id'] == $warehouseId;
-            });
+            // For warehouse-specific search, get products with stock info
+            return $this->productRepo->searchWithWarehouseStock($query, $warehouseId);
         }
 
-        return $products;
+        return $this->productRepo->search($query);
     }
 
     public function checkStock(int $productId, int $warehouseId): array
@@ -107,7 +104,7 @@ class POSService
         $stockInfo = $this->productRepo->getProductsWithWarehouseStock($warehouseId);
         
         $productStock = array_filter($stockInfo, function($item) use ($productId) {
-            return $item['id'] == $productId;
+            return $item['id'] === $productId;
         });
 
         return [

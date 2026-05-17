@@ -22,7 +22,7 @@ class DashboardController extends Controller
     public function index(): void
     {
         $this->authService->requireAuth();
-        
+
         $userRole = Session::get('role_name');
 
         switch ($userRole) {
@@ -36,6 +36,20 @@ class DashboardController extends Controller
                 $this->adminDashboard();
                 break;
         }
+    }
+
+    public function filter(): void
+    {
+        $this->authService->requireAuth();
+
+        header('Content-Type: application/json');
+
+        $range = $_GET['range'] ?? 'today';
+
+        $metrics = $this->dashboardService->getDashboardMetrics($range);
+
+        echo json_encode($metrics);
+        exit;
     }
 
     public function indexTopRevenue(): void
@@ -53,7 +67,7 @@ class DashboardController extends Controller
         $recentSales = $this->salesService->getAllSales(10, 0);
 
         $this->view(
-            'dashboard/cashier', 
+            'dashboard/cashier',
             compact('salesStats', 'recentSales')
         );
     }
@@ -64,17 +78,27 @@ class DashboardController extends Controller
         $lowStockItems = $this->dashboardService->getLowStockItems();
 
         $this->view(
-            'dashboard/staff', 
+            'dashboard/staff',
             compact('stats', 'lowStockItems')
         );
     }
 
     private function adminDashboard(): void
     {
-        $stats = $this->dashboardService->getStats();
+        $range = $_GET['range'] ?? 'today';
+
+        $metrics = $this->dashboardService->getDashboardMetrics($range);
+
+        $stats = [
+            'total_products'   => $metrics['globalCounters']['total_products'] ?? 0,
+            'total_warehouses' => $metrics['globalCounters']['total_warehouses'] ?? 0,
+            'total_categories' => $metrics['globalCounters']['total_categories'] ?? 0,
+        ];
+
+        $salesStats = $metrics['salesStats'];
+        $topProducts = $metrics['topProducts'];
+
         $lowStockItems = $this->dashboardService->getLowStockItems();
-        $salesStats = $this->salesService->getTodayStats();
-        $topProducts = $this->salesService->getTopSellingProducts(5);
 
         $this->view(
             'dashboard/index',
@@ -82,7 +106,8 @@ class DashboardController extends Controller
                 'stats',
                 'lowStockItems',
                 'salesStats',
-                'topProducts'
+                'topProducts',
+                'range'
             )
         );
     }

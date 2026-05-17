@@ -55,9 +55,9 @@ body.sidebar-open {
 
 .sidebar-brand a {
 	font-family: "Plus Jakarta Sans", sans-serif;
-	font-size: 30px;
+	font-size: 24px;
 	font-weight: 800;
-	letter-spacing: -0.04em;
+	letter-spacing: -0.06em;
 	color: var(--text-primary);
 	text-decoration: none;
 }
@@ -101,7 +101,7 @@ body.sidebar-open {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	padding: 9px 10px;
+	padding: 6px 10px;
 	text-decoration: none;
 	color: var(--text-secondary);
 	font-size: 13.5px;
@@ -114,8 +114,8 @@ body.sidebar-open {
 
 .sidebar-menu li a .nav-icon {
 	flex-shrink: 0;
-	width: 34px;
-	height: 34px;
+	width: 30px;
+	height: 30px;
 	border-radius: 8px;
 	display: flex;
 	align-items: center;
