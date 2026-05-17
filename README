@@ -191,6 +191,9 @@ Naming Convention
                         orders in (now()), revenue (now()),
                         top revenue generators (still buggy, only calc unit !price),
                         inventory risk assessment
+                [/] top-revenue.php:
+                        admin dashboard containing a maximize top rev page
+                        querying the top 5 (limit 5)
 ------------------------------------------------------------------
 [x] assets
         [x] css
@@ -204,6 +207,8 @@ Naming Convention
                         main layout sidebar styles
                 [/] dashboard.index.css:
                         layout for admin dashboard
+                [/] dashboard.top-revenue.css:
+                        layout for max top-rev dashboard
         [x] js
                 [/] auth.test-accounts.js:
                         handles cred copy function for appending class name
