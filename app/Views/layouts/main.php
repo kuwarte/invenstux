@@ -26,6 +26,7 @@ $pageTitle = ($currentPage === 'pos')
     <script src="/assets/js/sales.pos.js" defer></script>
     <script src="/assets/js/sales.index.js" defer></script>
     <script src="/assets/js/categories.index.js" defer></script>
+    <script src="/assets/js/products.index.js" defer></script>
 </head>
 <body>
 

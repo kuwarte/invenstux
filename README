@@ -214,7 +214,10 @@ Naming Convention
                         main list of history, render full sales audit
                 [/] receipt.php:
                         contains functional and printable htmltopdf receipt
-        [x] products
+        [/] products
+                [/] index.php
+                [/] edit.php
+                [/] create.php
         [x] stocks
         [x] warehouses
         [/] categories

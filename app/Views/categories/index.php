@@ -262,6 +262,13 @@ if (!function_exists('renderCategoryOptions')) {
     .table tr:last-child td { border-bottom: none; }
     .table tr:hover td { background: rgba(249, 250, 251, 0.7); }
 
+    /* Column Sizing and Explicit Alignments */
+    .col-structural { width: 55%; }
+    .col-date { width: 25%; }
+    .col-actions { text-align: right; width: 120px; }
+    
+    .date-cell { color: var(--text-secondary); font-weight: 500; }
+
     /* Perfectly Aligned Tree Hierarchy Rows */
     .cat-cell {
         display: flex;
@@ -270,6 +277,14 @@ if (!function_exists('renderCategoryOptions')) {
         position: relative;
         padding-left: calc(var(--level, 0) * 36px);
     }
+
+    /* Multi-tier Mapping System (Replaces Inline Variables) */
+    .cat-cell[data-level="0"] { --level: 0; }
+    .cat-cell[data-level="1"] { --level: 1; }
+    .cat-cell[data-level="2"] { --level: 2; }
+    .cat-cell[data-level="3"] { --level: 3; }
+    .cat-cell[data-level="4"] { --level: 4; }
+    .cat-cell[data-level="5"] { --level: 5; }
 
     .indent-connector {
         position: absolute;
@@ -300,8 +315,8 @@ if (!function_exists('renderCategoryOptions')) {
         border: 1px solid rgba(16, 185, 129, 0.15);
     }
 
-    /* Target alternative styling context for children */
-    tr[style*="--level: 0"] .cat-mono { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+    /* Target root level nodes alternative layout styling context */
+    .cat-cell[data-level="0"] .cat-mono { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
 
     .cat-name-container { display: flex; align-items: center; gap: 8px; }
     .cat-name { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
@@ -327,11 +342,13 @@ if (!function_exists('renderCategoryOptions')) {
         text-overflow: ellipsis;
     }
 
-    /* Empty States */
+    /* Empty States & Search Rows Fallbacks */
     .empty-state-container { text-align: center; padding: 5rem 2rem; background: #fafafa; border-radius: var(--radius-lg); margin: 1.5rem; border: 2px dashed var(--border-light); }
     .empty-state-icon { color: var(--text-muted); margin-bottom: 1.25rem; background: var(--surface); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: auto; margin-right: auto; box-shadow: var(--shadow-sm); }
     .empty-state-title { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem; }
     .empty-state-desc { color: var(--text-secondary); font-size: 0.875rem; max-width: 360px; margin: 0 auto; line-height: 1.5; }
+
+    #noResultsRow { display: none; }
 
     /* Modals Layout Blueprint */
     .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1.5rem; backdrop-filter: blur(4px); }
@@ -352,6 +369,9 @@ if (!function_exists('renderCategoryOptions')) {
     .delete-warning { display: flex; gap: 16px; align-items: flex-start; padding: 1.25rem; background: var(--error-bg); border: 1px solid var(--error-border); border-radius: var(--radius-md); }
     .delete-warning svg { color: var(--error-text); flex-shrink: 0; background: #fee2e2; padding: 6px; border-radius: 50%; width: 36px; height: 36px; box-sizing: border-box; }
     .delete-warning p { font-size: 0.9rem; color: #991b1b; line-height: 1.5; margin: 0; }
+    .delete-warning .warning-title { font-weight: 700; margin-bottom: 2px; }
+
+    .btn-modal-delete { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); color: var(--surface); background: var(--error-text); border: none; }
 
     /* Notification System Toasts */
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
@@ -437,9 +457,9 @@ if (!function_exists('renderCategoryOptions')) {
             <table class="table">
                 <thead>
                     <tr>
-                        <th style="width: 55%;">Category Structural Group</th>
-                        <th style="width: 25%;">Created Date</th>
-                        <th style="text-align: right; width: 120px;">Actions</th>
+                        <th class="col-structural">Category Structural Group</th>
+                        <th class="col-date">Created Date</th>
+                        <th class="col-actions">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="categoryTableBody">
@@ -449,7 +469,7 @@ if (!function_exists('renderCategoryOptions')) {
                         foreach ($categories as $cat): ?>
                             <tr class="category-data-row" data-name="<?= htmlspecialchars(strtolower($cat['name'] ?? '')) ?>" data-desc="<?= htmlspecialchars(strtolower($cat['description'] ?? '')) ?>">
                                 <td>
-                                    <div class="cat-cell" style="--level: <?= (int)$level ?>;">
+                                    <div class="cat-cell" data-level="<?= (int)$level ?>">
                                         <?php if ($level > 0): ?>
                                             <div class="indent-connector"></div>
                                         <?php endif; ?>
@@ -461,8 +481,8 @@ if (!function_exists('renderCategoryOptions')) {
                                             <div class="cat-name-container">
                                                 <span class="cat-name"><?= htmlspecialchars($cat['name']) ?></span>
                                                 <?php if ((int)($cat['product_count'] ?? 0) > 0): ?>
-    <span class="product-badge"><?= (int)$cat['product_count'] ?> items</span>
-<?php endif; ?>
+                                                    <span class="product-badge"><?= (int)$cat['product_count'] ?> items</span>
+                                                <?php endif; ?>
                                             </div>
                                             <?php if (!empty($cat['description'])): ?>
                                                 <div class="cat-desc" title="<?= htmlspecialchars($cat['description']) ?>">
@@ -472,7 +492,7 @@ if (!function_exists('renderCategoryOptions')) {
                                         </div>
                                     </div>
                                 </td>
-                                <td style="color: var(--text-secondary); font-weight: 500;">
+                                <td class="date-cell">
                                     <?= !empty($cat['created_at']) ? date('M d, Y', strtotime($cat['created_at'])) : '—' ?>
                                 </td>
                                 <td>
@@ -516,7 +536,7 @@ if (!function_exists('renderCategoryOptions')) {
                     </tr>
                 <?php endif; ?>
 
-                <tr id="noResultsRow" style="display:none;">
+                <tr id="noResultsRow">
                     <td colspan="3">
                         <div class="empty-state-container">
                             <div class="empty-state-icon">
@@ -629,14 +649,14 @@ if (!function_exists('renderCategoryOptions')) {
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                     </svg>
                     <div>
-                        <p style="font-weight: 700; margin-bottom: 2px;">Are you sure?</p>
+                        <p class="warning-title">Are you sure?</p>
                         <p>This action cannot be undone. This will permanently delete the category <strong id="delete_cat_name"></strong>.</p>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" onclick="closeModal('deleteModal')">Cancel</button>
-                <button type="submit" class="btn btn-primary btn-delete" style="box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); color: var(--surface); background: var(--error-text); border: none;">Delete</button>
+                <button type="submit" class="btn btn-primary btn-delete btn-modal-delete">Delete</button>
             </div>
         </form>
     </div>
