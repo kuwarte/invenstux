@@ -219,7 +219,10 @@ Naming Convention
                 [/] edit.php
                 [/] create.php
         [x] stocks
-        [x] warehouses
+        [/] warehouses
+                [/] index.php
+                [/] edit.php
+                [/] create.php
         [/] categories
                 [/] index.php:
                         contains list of category with crud modal
