@@ -24,6 +24,7 @@ $pageTitle = ($currentPage === 'pos')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/assets/js/dashboard.index.js" defer></script>
     <script src="/assets/js/sales.pos.js" defer></script>
+    <script src="/assets/js/sales.index.js" defer></script>
 </head>
 <body>
 
