@@ -16,17 +16,29 @@ $pageTitle = ($currentPage === 'pos')
     <title><?= APP_NAME ?></title>
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/layouts.main.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
     <link rel="stylesheet" href="/assets/css/dashboard.index.css">
     <link rel="stylesheet" href="/assets/css/dashboard.top-revenue.css">
     <link rel="stylesheet" href="/assets/css/users.index.css">
     <script src="/assets/js/layouts.main.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/assets/js/dashboard.index.js" defer></script>
-    <script src="/assets/js/sales.pos.js" defer></script>
-    <script src="/assets/js/sales.index.js" defer></script>
-    <script src="/assets/js/categories.index.js" defer></script>
-    <script src="/assets/js/products.index.js" defer></script>
+
+    <?php if ($currentPage === 'dashboard'): ?>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="/assets/js/dashboard.index.js" defer></script>
+    <?php elseif ($currentPage === 'pos'): ?>
+        <script src="/assets/js/sales.pos.js" defer></script>
+    <?php elseif ($currentPage === 'sales'): ?>
+        <script src="/assets/js/sales.index.js" defer></script>
+    <?php elseif ($currentPage === 'categories'): ?>
+        <script src="/assets/js/categories.index.js" defer></script>
+    <?php elseif ($currentPage === 'products'): ?>
+        <script src="/assets/js/products.index.js" defer></script>
+    <?php elseif ($currentPage === 'warehouses'): ?>
+        <script src="/assets/js/warehouses.index.js" defer></script>
+    <?php elseif ($currentPage === 'stocks'): ?>
+        <script src="/assets/js/stocks.index.js" defer></script>
+    <?php endif; ?>
 </head>
 <body>
 

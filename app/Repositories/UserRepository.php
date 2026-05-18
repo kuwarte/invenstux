@@ -18,6 +18,18 @@ class UserRepository
         ")->fetchAll();
     }
 
+    public function getManagers(): array
+    {
+        return $this->db->query("
+            SELECT u.id, u.full_name, u.email, r.name AS role_name
+            FROM users u
+            INNER JOIN roles r ON u.role_id = r.id
+            WHERE r.name = 'manager'
+              AND u.is_active = 1
+            ORDER BY u.full_name
+        ")->fetchAll();
+    }
+
     public function findById(int $id): ?array
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ?");

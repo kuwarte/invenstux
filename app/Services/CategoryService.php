@@ -15,6 +15,11 @@ class CategoryService
         return $this->categoryRepo->getAll(); // FLAT
     }
 
+    public function getFilteredCategories(string $search): array
+    {
+        return $this->categoryRepo->getFiltered($search);
+    }
+
     public function getCategoryTree(): array
     {
         $roots = $this->categoryRepo->getRootCategories();

@@ -7,7 +7,5 @@ CREATE TABLE products (
     unit_of_measure VARCHAR(30) DEFAULT 'pcs',
     unit_cost       DECIMAL(12,2) DEFAULT 0.00,
     is_active       TINYINT(1) DEFAULT 1,
-    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );

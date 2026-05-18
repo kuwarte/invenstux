@@ -42,6 +42,40 @@ class StockRepository
         return $result;
     }
 
+    public function transferStock(
+        int $productId,
+        int $fromWarehouseId,
+        int $toWarehouseId,
+        int $quantity,
+        int $userId,
+        string $notes = ''
+    ): array {
+        $stmt = $this->db->prepare('
+            CALL sp_transfer_stock(
+                :product_id,
+                :from_warehouse,
+                :to_warehouse,
+                :quantity,
+                :user_id,
+                :notes,
+                @status,
+                @message
+            )
+        ');
+
+        $stmt->bindValue(':product_id',    $productId,       PDO::PARAM_INT);
+        $stmt->bindValue(':from_warehouse', $fromWarehouseId, PDO::PARAM_INT);
+        $stmt->bindValue(':to_warehouse',   $toWarehouseId,   PDO::PARAM_INT);
+        $stmt->bindValue(':quantity',       $quantity,        PDO::PARAM_INT);
+        $stmt->bindValue(':user_id',        $userId,          PDO::PARAM_INT);
+        $stmt->bindValue(':notes',          $notes,           PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $this->db->query('
+            SELECT @status AS status, @message AS message
+        ')->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function getLowStock()
     {
         $stmt = $this->db->query('

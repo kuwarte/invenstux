@@ -28,6 +28,19 @@ class CategoryController extends Controller
         $this->view('categories/index', compact('categories', 'categoryOptions'));
     }
 
+    public function filter(): void
+    {
+        $this->authorize('manage_categories');
+
+        $search = $_GET['search'] ?? '';
+
+        $categories = $this->categoryService->getFilteredCategories($search);
+
+        header('Content-Type: application/json');
+        echo json_encode($categories);
+        exit;
+    }
+
     public function indexCreate(): void
     {
         $this->authorize('manage_categories');

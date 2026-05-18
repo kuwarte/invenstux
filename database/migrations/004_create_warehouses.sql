@@ -4,6 +4,5 @@ CREATE TABLE warehouses (
     name       VARCHAR(150) NOT NULL,
     location   VARCHAR(255),
     is_active  TINYINT(1) DEFAULT 1,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (manager_id) REFERENCES users(id) ON DELETE SET NULL
 );

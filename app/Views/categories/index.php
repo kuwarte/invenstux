@@ -28,44 +28,7 @@ if (!function_exists('renderCategoryOptions')) {
 ?>
 
 <style>
-    /* Premium Dashboard Component Enhancements */
-    @keyframes dashIn {
-        from { opacity: 0; transform: translateY(12px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .pos-wrapper {
-        width: 100%;
-        max-width: 1440px;
-        margin: 0 auto;
-        padding: 24px;
-        animation: dashIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    /* Page Header */
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .header-title-area h1 {
-        font-size: 1.75rem;
-        font-weight: 800;
-        color: var(--text-primary);
-        letter-spacing: -0.03em;
-        margin: 0;
-    }
-
-    .header-title-area p {
-        margin: 0.25rem 0 0 0;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-    }
-
-    /* Renamed Stats Grid Components */
+    /* Categories-specific styles only */
     .cat-stats-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -75,8 +38,6 @@ if (!function_exists('renderCategoryOptions')) {
 
     @media (max-width: 768px) {
         .cat-stats-grid { grid-template-columns: 1fr; }
-        .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-        .page-header .btn { width: 100%; }
     }
 
     .cat-stat-card {
@@ -91,18 +52,11 @@ if (!function_exists('renderCategoryOptions')) {
         transition: var(--transition-base);
     }
 
-    .cat-stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
+    .cat-stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 
     .cat-stat-icon-wrap {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 48px; height: 48px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
         flex-shrink: 0;
         background: var(--brand-accent-light);
         color: var(--brand-accent-dark);
@@ -112,173 +66,21 @@ if (!function_exists('renderCategoryOptions')) {
     .cat-stat-info-value { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
     .cat-stat-info-label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
 
-    /* Master Table Container Card */
-    .main-card {
-        background: var(--surface);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-sm);
-        overflow: hidden;
-    }
-
-    .table-control-bar {
-        padding: 1rem 1.5rem;
-        background: #fbfbfc;
-        border-bottom: 1px solid var(--border-light);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
     .search-wrapper { position: relative; width: 100%; max-width: 360px; }
     .search-wrapper svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none; }
     .search-wrapper .form-input { padding-left: 2.5rem; height: 40px; }
 
-    /* Interactive Elements */
-    .form-input {
-        padding: 0.6rem 1rem;
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border-light);
-        font-family: inherit;
-        font-size: 0.9rem;
-        color: var(--text-primary);
-        background: var(--input-bg);
-        transition: var(--transition-base);
-        outline: none;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .form-input:focus {
-        border-color: var(--brand-accent);
-        background: var(--surface);
-        box-shadow: 0 0 0 3px var(--brand-accent-light);
-    }
-
-    select.form-input { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; padding-right: 2.5rem; }
-
-    /* ADAPTED BUTTONS REFERENCE SYSTEM */
-    .btn {
-        background-color: var(--brand-accent);
-        color: #ffffff;
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 0.6rem 1.1rem;
-        font-family: "Plus Jakarta Sans", sans-serif;
-        font-size: 0.875rem;
-        font-weight: 700;
-        border: none;
-        text-decoration: none;
-        box-sizing: border-box;
-        transition: all var(--transition-base);
-    }
-
-    .btn-primary {
-        background: var(--brand-accent);
-        color: white;
-        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-    }
-
-    .btn-primary:hover {
-        background: var(--brand-accent-hover);
-        box-shadow: var(--shadow-glow);
-    }
-
-    .btn-primary:active {
-        transform: scale(0.98);
-    }
-
-    .btn-white {
-        background: var(--surface);
-        border: 1px solid var(--border-light);
-        color: var(--text-primary);
-        box-shadow: var(--shadow-sm);
-    }
-    
-    .btn-white:hover {
-        background: var(--input-bg);
-        border-color: var(--text-secondary);
-    }
-
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: flex-end;
-        align-items: center;
-    }
-
-    .btn-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        transition: all var(--transition-base);
-        background: var(--surface);
-        box-sizing: border-box;
-    }
-
-    .btn-edit {
-        border: 1px solid var(--border-light);
-        color: var(--text-primary);
-    }
-    
-    .btn-edit:hover {
-        background: var(--bg-color);
-        border-color: var(--text-secondary);
-    }
-
-    .btn-delete {
-        border: 1px solid var(--error-border);
-        color: var(--error-text);
-    }
-    
-    .btn-delete:hover {
-        background: var(--error-bg);
-    }
-
-    /* Modernized Table Design */
-    .table-container { overflow-x: auto; }
-    .table { width: 100%; border-collapse: collapse; text-align: left; }
-    
-    .table th {
-        padding: 0.85rem 1.5rem;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-secondary);
-        background: #f8fafc;
-        border-bottom: 1px solid var(--border-light);
-    }
-
-    .table td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-light); font-size: 0.9rem; vertical-align: middle; }
-    .table tr:last-child td { border-bottom: none; }
-    .table tr:hover td { background: rgba(249, 250, 251, 0.7); }
-
-    /* Column Sizing and Explicit Alignments */
     .col-structural { width: 55%; }
     .col-date { width: 25%; }
     .col-actions { text-align: right; width: 120px; }
-    
     .date-cell { color: var(--text-secondary); font-weight: 500; }
 
-    /* Perfectly Aligned Tree Hierarchy Rows */
     .cat-cell {
-        display: flex;
-        align-items: center;
-        gap: 14px;
+        display: flex; align-items: center; gap: 14px;
         position: relative;
         padding-left: calc(var(--level, 0) * 36px);
     }
 
-    /* Multi-tier Mapping System (Replaces Inline Variables) */
     .cat-cell[data-level="0"] { --level: 0; }
     .cat-cell[data-level="1"] { --level: 1; }
     .cat-cell[data-level="2"] { --level: 2; }
@@ -289,9 +91,7 @@ if (!function_exists('renderCategoryOptions')) {
     .indent-connector {
         position: absolute;
         left: calc((var(--level, 1) - 1) * 36px + 16px);
-        top: -1rem;
-        width: 20px;
-        height: calc(1rem + 22px);
+        top: -1rem; width: 20px; height: calc(1rem + 22px);
         border-left: 2px solid var(--border-light);
         border-bottom: 2px solid var(--border-light);
         border-bottom-left-radius: 8px;
@@ -299,81 +99,61 @@ if (!function_exists('renderCategoryOptions')) {
     }
 
     .cat-mono {
-        width: 38px;
-        height: 38px;
-        border-radius: 8px;
-        background: var(--brand-accent-light);
-        color: var(--brand-accent-dark);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        flex-shrink: 0;
-        z-index: 2;
+        width: 38px; height: 38px; border-radius: 8px;
+        background: var(--brand-accent-light); color: var(--brand-accent-dark);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
+        flex-shrink: 0; z-index: 2;
         border: 1px solid rgba(16, 185, 129, 0.15);
     }
 
-    /* Target root level nodes alternative layout styling context */
     .cat-cell[data-level="0"] .cat-mono { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
 
     .cat-name-container { display: flex; align-items: center; gap: 8px; }
     .cat-name { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
-    
-    /* Product Pill Badge */
+
     .product-badge {
-        font-size: 0.75rem;
-        font-weight: 600;
-        background: #f3f4f6;
-        color: var(--text-secondary);
-        padding: 2px 8px;
-        border-radius: 99px;
+        font-size: 0.75rem; font-weight: 600;
+        background: #f3f4f6; color: var(--text-secondary);
+        padding: 2px 8px; border-radius: 99px;
         border: 1px solid var(--border-light);
     }
 
     .cat-desc {
-        font-size: 0.825rem;
-        color: var(--text-secondary);
-        margin-top: 2px;
-        max-width: 420px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 0.825rem; color: var(--text-secondary); margin-top: 2px;
+        max-width: 420px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* Empty States & Search Rows Fallbacks */
-    .empty-state-container { text-align: center; padding: 5rem 2rem; background: #fafafa; border-radius: var(--radius-lg); margin: 1.5rem; border: 2px dashed var(--border-light); }
-    .empty-state-icon { color: var(--text-muted); margin-bottom: 1.25rem; background: var(--surface); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: auto; margin-right: auto; box-shadow: var(--shadow-sm); }
+    .empty-state-container {
+        text-align: center; padding: 5rem 2rem; background: #fafafa;
+        border-radius: var(--radius-lg); margin: 1.5rem;
+        border: 2px dashed var(--border-light);
+    }
+    .empty-state-icon {
+        color: var(--text-secondary); margin-bottom: 1.25rem;
+        background: var(--surface); width: 64px; height: 64px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin-left: auto; margin-right: auto; box-shadow: var(--shadow-sm);
+    }
     .empty-state-title { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem; }
     .empty-state-desc { color: var(--text-secondary); font-size: 0.875rem; max-width: 360px; margin: 0 auto; line-height: 1.5; }
 
     #noResultsRow { display: none; }
 
-    /* Modals Layout Blueprint */
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1.5rem; backdrop-filter: blur(4px); }
-    .modal-backdrop.show { display: flex; }
-    .modal { background: var(--surface); border-radius: var(--radius-lg); width: 100%; max-width: 480px; box-shadow: var(--shadow-md); border: 1px solid var(--border-light); overflow: hidden; animation: dashIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
-    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-light); background: #f8fafc; }
-    .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
-    .modal-close { width: 32px; height: 32px; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-md); cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; transition: var(--transition-base); }
-    .modal-close:hover { background: var(--input-bg); color: var(--text-primary); }
-    .modal-body { padding: 1.5rem; }
-    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border-light); background: #f8fafc; display: flex; justify-content: flex-end; gap: 0.75rem; }
-    .form-group { margin-bottom: 1.25rem; }
-    .form-group:last-child { margin-bottom: 0; }
-    .form-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 0.5rem; }
-    .form-label .req { color: var(--error-text); margin-left: 2px; }
-    textarea.form-input { resize: vertical; min-height: 90px; }
+    .action-buttons { display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center; }
 
-    .delete-warning { display: flex; gap: 16px; align-items: flex-start; padding: 1.25rem; background: var(--error-bg); border: 1px solid var(--error-border); border-radius: var(--radius-md); }
-    .delete-warning svg { color: var(--error-text); flex-shrink: 0; background: #fee2e2; padding: 6px; border-radius: 50%; width: 36px; height: 36px; box-sizing: border-box; }
-    .delete-warning p { font-size: 0.9rem; color: #991b1b; line-height: 1.5; margin: 0; }
-    .delete-warning .warning-title { font-weight: 700; margin-bottom: 2px; }
+    .btn-icon {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 32px; height: 32px; border-radius: var(--radius-sm);
+        cursor: pointer; transition: all var(--transition-base);
+        background: var(--surface); box-sizing: border-box;
+    }
 
-    .btn-modal-delete { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); color: var(--surface); background: var(--error-text); border: none; }
+    .btn-edit { border: 1px solid var(--border-light); color: var(--text-primary); }
+    .btn-edit:hover { background: var(--input-bg); border-color: var(--text-secondary); }
+    .btn-delete { border: 1px solid var(--error-border); color: var(--error-text); }
+    .btn-delete:hover { background: var(--error-bg); }
 
-    /* Notification System Toasts */
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
     .toast { min-width: 280px; padding: 1rem; border-radius: var(--radius-md); background: var(--surface); border: 1px solid var(--border-light); box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 12px; font-size: 0.85rem; font-weight: 600; color: var(--text-primary); transform: translateY(8px); opacity: 0; transition: all 0.25s ease; }
     .toast.show { transform: translateY(0); opacity: 1; }
@@ -386,16 +166,16 @@ if (!function_exists('renderCategoryOptions')) {
 
 <div id="toastContainer" class="toast-container"></div>
 
-<div class="pos-wrapper">
+<div class="page-wrapper">
     <!-- Header Block -->
     <header class="page-header">
-        <div class="header-title-area">
-            <h1>Categories</h1>
-            <p>Organize your products into nested hierarchy tiers smoothly.</p>
+        <div class="page-header-group">
+            <h1 class="page-title">Categories</h1>
+            <p class="text-secondary">Organize your products into nested hierarchy tiers.</p>
         </div>
         <div>
             <button class="btn btn-primary" type="button" onclick="openModal('addModal')">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
                 </svg>
                 Add Category
@@ -420,12 +200,13 @@ if (!function_exists('renderCategoryOptions')) {
         <div class="cat-stat-card">
             <div class="cat-stat-icon-wrap">
                 <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
                 </svg>
             </div>
             <div class="cat-stat-card-content">
-                <div class="cat-stat-info-value"><?= number_format($totalProducts) ?></div>
-                <div class="cat-stat-info-label">Tracked Items</div>
+                <?php $rootCount = count(array_filter($categories, fn($c) => empty($c['parent_id']))); ?>
+                <div class="cat-stat-info-value"><?= number_format($rootCount) ?></div>
+                <div class="cat-stat-info-label">Root Categories</div>
             </div>
         </div>
 
@@ -446,10 +227,8 @@ if (!function_exists('renderCategoryOptions')) {
     <div class="main-card">
         <div class="table-control-bar">
             <div class="search-wrapper">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-                <input type="text" id="categorySearch" class="form-input" placeholder="Search categories by phrase..." oninput="filterTable()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="categorySearch" class="form-input" placeholder="Search…" style="width: 260px;" oninput="handleSearchInput()">
             </div>
         </div>
 
@@ -493,7 +272,7 @@ if (!function_exists('renderCategoryOptions')) {
                                     </div>
                                 </td>
                                 <td class="date-cell">
-                                    <?= !empty($cat['created_at']) ? date('M d, Y', strtotime($cat['created_at'])) : '—' ?>
+                                    <?= !empty($cat['created_at']) ? date('M d, Y', strtotime($cat['created_at'])) : 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â' ?>
                                 </td>
                                 <td>
                                     <div class="action-buttons">
@@ -576,7 +355,7 @@ if (!function_exists('renderCategoryOptions')) {
                     <label class="form-label">Structural Level Placement</label>
                     <select class="form-input" name="parent_id">
                         <option value="">Top-Level Grouping (Root)</option>
-                        <?php renderCategoryOptions($categories); ?>
+                        <?php renderCategoryOptions($categoryOptions ?? []); ?>
                     </select>
                 </div>
                 <div class="form-group">
@@ -614,7 +393,7 @@ if (!function_exists('renderCategoryOptions')) {
                     <label class="form-label">Structural Level Placement</label>
                     <select class="form-input" name="parent_id" id="edit_parent">
                         <option value="">Top-Level Grouping (Root)</option>
-                        <?php renderCategoryOptions($categories); ?>
+                        <?php renderCategoryOptions($categoryOptions ?? []); ?>
                     </select>
                 </div>
                 <div class="form-group">
