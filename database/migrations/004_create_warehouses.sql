@@ -1,4 +1,4 @@
-CREATE TABLE warehouses (
+CREATE TABLE IF NOT EXISTS warehouses (
     id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     manager_id INT UNSIGNED DEFAULT NULL,
     name       VARCHAR(150) NOT NULL,

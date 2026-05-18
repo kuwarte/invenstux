@@ -12,11 +12,14 @@ CREATE PROCEDURE sp_process_sale(
     OUT p_message        VARCHAR(255)
 )
 BEGIN
+    DECLARE v_error_msg VARCHAR(255) DEFAULT 'Transaction failed';
+
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
+        GET DIAGNOSTICS CONDITION 1 v_error_msg = MESSAGE_TEXT;
         ROLLBACK;
         SET p_status  = 'ERROR';
-        SET p_message = 'Transaction failed';
+        SET p_message = v_error_msg;
     END;
 
     START TRANSACTION;
@@ -87,12 +90,14 @@ CREATE PROCEDURE sp_adjust_stock(
 )
 BEGIN
     DECLARE v_stock INT;
+    DECLARE v_error_msg VARCHAR(255) DEFAULT 'Stock adjustment failed';
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
+        GET DIAGNOSTICS CONDITION 1 v_error_msg = MESSAGE_TEXT;
         ROLLBACK;
         SET p_status  = 'ERROR';
-        SET p_message = 'Stock adjustment failed';
+        SET p_message = v_error_msg;
     END;
 
     START TRANSACTION;
@@ -169,12 +174,14 @@ CREATE PROCEDURE sp_transfer_stock(
 BEGIN
     DECLARE v_source_stock INT;
     DECLARE v_out_movement_id INT;
+    DECLARE v_error_msg VARCHAR(255) DEFAULT 'Transfer failed';
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
+        GET DIAGNOSTICS CONDITION 1 v_error_msg = MESSAGE_TEXT;
         ROLLBACK;
         SET p_status  = 'ERROR';
-        SET p_message = 'Transfer failed';
+        SET p_message = v_error_msg;
     END;
 
     IF p_from_warehouse = p_to_warehouse THEN

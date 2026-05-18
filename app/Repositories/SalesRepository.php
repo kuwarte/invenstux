@@ -38,14 +38,15 @@ class SalesRepository
         $stmt->bindValue(':payment_amount', $paymentAmount);
 
         $stmt->execute();
+        $stmt->closeCursor();
 
         return $this->db->query('
             SELECT
-                @sale_id AS sale_id,
-                @total_amount AS total_amount,
+                @sale_id       AS sale_id,
+                @total_amount  AS total_amount,
                 @change_amount AS change_amount,
-                @status AS status,
-                @message AS message
+                @status        AS status,
+                @message       AS message
         ')->fetch(PDO::FETCH_ASSOC);
     }
 

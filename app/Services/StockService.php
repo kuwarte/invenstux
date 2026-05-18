@@ -4,6 +4,7 @@ require_once __DIR__ . '/../Repositories/ProductRepository.php';
 require_once __DIR__ . '/../Repositories/WarehouseRepository.php';
 require_once __DIR__ . '/../Repositories/ProductWarehouseRepository.php';
 require_once __DIR__ . '/../Repositories/StockRepository.php';
+require_once __DIR__ . '/../../core/Logger.php';
 
 class StockService
 {
@@ -11,6 +12,7 @@ class StockService
     private WarehouseRepository $warehouseRepo;
     private ProductWarehouseRepository $stockRepo;
     private StockRepository $stockProcRepo;
+    private Logger $log;
 
     public function __construct(PDO $db)
     {
@@ -18,6 +20,7 @@ class StockService
         $this->warehouseRepo = new WarehouseRepository($db);
         $this->stockRepo     = new ProductWarehouseRepository($db);
         $this->stockProcRepo = new StockRepository($db);
+        $this->log           = new Logger('stock');
     }
 
     public function getStockDashboardData(array $filters = []): array
@@ -54,18 +57,22 @@ class StockService
         int $userId,
         ?string $notes = null
     ): void {
+        $this->log->info('stockIn requested', [
+            'product_id' => $productId, 'warehouse_id' => $warehouseId,
+            'quantity' => $quantity, 'user_id' => $userId,
+        ]);
+
         $result = $this->stockProcRepo->adjustStock(
-            $productId,
-            $warehouseId,
-            'IN',
-            $quantity,
-            $userId,
+            $productId, $warehouseId, 'IN', $quantity, $userId,
             $notes ?? 'Stock in operation'
         );
 
         if ($result['status'] !== 'SUCCESS') {
+            $this->log->error('stockIn failed', ['reason' => $result['message']]);
             throw new Exception($result['message']);
         }
+
+        $this->log->info('stockIn succeeded', ['new_quantity' => $result['new_quantity']]);
     }
 
     /**
@@ -79,18 +86,22 @@ class StockService
         int $userId,
         ?string $notes = null
     ): void {
+        $this->log->info('stockOut requested', [
+            'product_id' => $productId, 'warehouse_id' => $warehouseId,
+            'quantity' => $quantity, 'user_id' => $userId,
+        ]);
+
         $result = $this->stockProcRepo->adjustStock(
-            $productId,
-            $warehouseId,
-            'OUT',
-            $quantity,
-            $userId,
+            $productId, $warehouseId, 'OUT', $quantity, $userId,
             $notes ?? 'Stock out operation'
         );
 
         if ($result['status'] !== 'SUCCESS') {
+            $this->log->error('stockOut failed', ['reason' => $result['message']]);
             throw new Exception($result['message']);
         }
+
+        $this->log->info('stockOut succeeded', ['new_quantity' => $result['new_quantity']]);
     }
 
     /**
@@ -105,18 +116,25 @@ class StockService
         int $userId,
         ?string $notes = null
     ): void {
+        $this->log->info('transferStock requested', [
+            'product_id'        => $productId,
+            'from_warehouse_id' => $fromWarehouseId,
+            'to_warehouse_id'   => $toWarehouseId,
+            'quantity'          => $quantity,
+            'user_id'           => $userId,
+        ]);
+
         $result = $this->stockProcRepo->transferStock(
-            $productId,
-            $fromWarehouseId,
-            $toWarehouseId,
-            $quantity,
-            $userId,
+            $productId, $fromWarehouseId, $toWarehouseId, $quantity, $userId,
             $notes ?? ''
         );
 
         if ($result['status'] !== 'SUCCESS') {
+            $this->log->error('transferStock failed', ['reason' => $result['message']]);
             throw new Exception($result['message']);
         }
+
+        $this->log->info('transferStock succeeded');
     }
 
     public function updateThresholds(array $data): void

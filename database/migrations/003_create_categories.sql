@@ -1,4 +1,4 @@
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     parent_id   INT UNSIGNED DEFAULT NULL,
     name        VARCHAR(100) NOT NULL,

@@ -1,4 +1,4 @@
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     category_id     INT UNSIGNED DEFAULT NULL,
     sku             VARCHAR(60) NOT NULL UNIQUE,

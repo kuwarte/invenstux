@@ -1,4 +1,4 @@
-CREATE TABLE sales (
+CREATE TABLE IF NOT EXISTS sales (
     id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id        INT UNSIGNED NOT NULL,
     payment_amount DECIMAL(12,2) NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE sales (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE sale_items (
+CREATE TABLE IF NOT EXISTS sale_items (
     id           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     sale_id      INT UNSIGNED NOT NULL,
     product_id   INT UNSIGNED NOT NULL,

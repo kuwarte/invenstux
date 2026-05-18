@@ -1,4 +1,4 @@
-CREATE TABLE product_warehouse (
+CREATE TABLE IF NOT EXISTS product_warehouse (
     product_id   INT UNSIGNED NOT NULL,
     warehouse_id INT UNSIGNED NOT NULL,
     quantity     INT DEFAULT 0,
