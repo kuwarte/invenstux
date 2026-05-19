@@ -128,7 +128,7 @@
                 </div>
                 <ul class="features-list">
                     <li>Create, edit, and delete products</li>
-                    <li>Stock in/out operations and warehouse management</li>
+                    <li>Stock in/out operations</li>
                     <li>Manage product categories</li>
                 </ul>
             </div>

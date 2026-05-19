@@ -18,7 +18,7 @@ $accounts = [
         'role' => 'admin',
         'username' => 'admin',
         'email' => 'admin@example.com',
-        'full_name' => 'System Administrator',
+        'full_name' => 'Admin User',
         'password' => 'admin123'
     ],
     [
@@ -39,7 +39,7 @@ $accounts = [
         'role' => 'staff',
         'username' => 'staff',
         'email' => 'staff@example.com',
-        'full_name' => 'Staff Member',
+        'full_name' => 'Inventory Staff Member',
         'password' => 'staff123'
     ]
 ];
