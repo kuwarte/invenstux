@@ -188,10 +188,22 @@
 .btn-primary:hover {
 	background: var(--brand-accent-hover);
 	box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
-	transform: translateY(-1px);
 }
 
 .btn-primary:active { transform: scale(0.98); box-shadow: none; }
+
+.btn-danger {
+	background: #dc2626 !important;
+	color: #ffffff;
+}
+
+.btn-danger:hover {
+	background: #b91c1c;
+	box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
+	color: #ffffff;
+}
+
+.btn-danger:active { transform: scale(0.98); box-shadow: none; }
 
 .btn-white {
 	background: var(--surface);
@@ -226,10 +238,11 @@
 .btn-edit:hover { background: var(--bg-color); border-color: var(--text-secondary); }
 
 .btn-delete {
-	border: 1px solid var(--error-border);
-	color: var(--error-text);
+	border: 1px solid #fca5a5;
+	color: #ffffff;
+	background: #dc2626;
 }
-.btn-delete:hover { background: var(--error-bg); }
+.btn-delete:hover { background: #b91c1c; border-color: #b91c1c; }
 
 .form-input {
 	padding: 0.6rem 1rem;
@@ -505,13 +518,6 @@ textarea.form-input {
 
 .delete-warning p { font-size: 0.9rem; color: #991b1b; line-height: 1.5; margin: 0; }
 .delete-warning .warning-title { font-weight: 700; margin-bottom: 2px; }
-
-.btn-modal-delete {
-	background: var(--error-text);
-	color: #fff;
-	border: none;
-	box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
-}
 
 /* Responsive */
 @media (max-width: 768px) {

@@ -704,7 +704,7 @@
                 <span class="catalog-title">Available Products</span>
                 <div class="warehouse-select-wrap">
                     <label for="warehouseSelect">Location</label>
-                    <select id="warehouseSelect" class="form-input" onchange="syncWarehouse(this.value, 'main')">
+                    <select id="warehouseSelect" class="filter-dropdown" onchange="syncWarehouse(this.value, 'main')">
                         <option value="">Select Branch...</option>
                         <?php if (isset($warehouses) && !empty($warehouses)): ?>
                             <?php foreach ($warehouses as $warehouse): ?>
@@ -742,7 +742,7 @@
 
             <div class="cart-warehouse">
                 <label class="form-label-sm">Store Branch</label>
-                <select id="warehouseSelectCart" class="form-input" onchange="syncWarehouse(this.value, 'cart')">
+                <select id="warehouseSelectCart" class="filter-dropdown" style="width: 100%" onchange="syncWarehouse(this.value, 'cart')">
                     <option value="">Select Location...</option>
                     <?php if (isset($warehouses) && !empty($warehouses)): ?>
                         <?php foreach ($warehouses as $warehouse): ?>

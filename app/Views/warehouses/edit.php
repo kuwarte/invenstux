@@ -33,22 +33,6 @@ $managers  = $managers ?? [];
         margin-top: 2rem;
     }
 
-    .btn-danger {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 0.6rem 1.1rem;
-        border-radius: var(--radius-md);
-        font-size: 0.875rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition-base);
-        border: none;
-        background: #ef4444;
-        color: white;
-    }
-
     .btn-danger:hover { background: #dc2626; }
 </style>
 
@@ -67,17 +51,17 @@ $managers  = $managers ?? [];
 
                 <div class="form-field">
                     <label>Warehouse Name *</label>
-                    <input type="text" name="name" class="form-input" value="<?= htmlspecialchars($warehouse['name'] ?? '') ?>" required>
+                    <input type="text" name="name" class="form-input" style="width: 100%" value="<?= htmlspecialchars($warehouse['name'] ?? '') ?>" required>
                 </div>
 
                 <div class="form-field">
                     <label>Location Address</label>
-                    <input type="text" name="location" class="form-input" value="<?= htmlspecialchars($warehouse['location'] ?? '') ?>">
+                    <input type="text" name="location" class="form-input" style="width: 100%" value="<?= htmlspecialchars($warehouse['location'] ?? '') ?>">
                 </div>
 
                 <div class="form-field">
                     <label>Assign Manager <span style="color: var(--text-secondary); font-weight: 400;">(Managers only)</span></label>
-                    <select name="manager_id" class="form-input">
+                    <select name="manager_id" class="filter-dropdown">
                         <option value="">Select Manager (Optional)</option>
                         <?php if (!empty($managers)): ?>
                         <?php foreach ($managers as $manager): ?>
@@ -93,7 +77,7 @@ $managers  = $managers ?? [];
 
                 <div class="form-field">
                     <label>Status</label>
-                    <select name="is_active" class="form-input">
+                    <select name="is_active" class="filter-dropdown">
                         <option value="1" <?= ($warehouse['is_active'] ?? 1) == 1 ? 'selected' : '' ?>>Active</option>
                         <option value="0" <?= ($warehouse['is_active'] ?? 1) == 0 ? 'selected' : '' ?>>Inactive</option>
                     </select>
@@ -101,8 +85,8 @@ $managers  = $managers ?? [];
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary" style="flex: 1; padding: 0.75rem;">Update Warehouse</button>
-                    <a href="/warehouses" class="btn btn-white" style="text-decoration: none; text-align: center;">Cancel</a>
-                    <button type="button" onclick="confirmDelete()" class="btn-danger">Delete</button>
+                    <button type="button" onclick="confirmDelete()" class="btn btn-danger">Delete</button>
+                    <a href="/warehouses" class="btn-ghost">Cancel</a>
                 </div>
             </form>
 

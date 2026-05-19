@@ -43,15 +43,15 @@
             <form method="POST" action="/warehouses/create">
                 <div class="form-field">
                     <label>Warehouse Name *</label>
-                    <input type="text" name="name" class="form-input" placeholder="e.g. North Distribution Center" required>
+                    <input type="text" name="name" class="form-input" style="width: 100%" placeholder="e.g. North Distribution Center" required>
                 </div>
                 <div class="form-field">
                     <label>Location Address</label>
-                    <input type="text" name="location" class="form-input" placeholder="City, State, Zip">
+                    <input type="text" name="location" class="form-input" style="width: 100%" placeholder="City, State, Zip">
                 </div>
                 <div class="form-field">
                     <label>Assign Manager <span style="color: var(--text-secondary); font-weight: 400;">(Managers only)</span></label>
-                    <select name="manager_id" class="form-input">
+                    <select name="manager_id" class="filter-dropdown">
                         <option value="">Select Manager (Optional)</option>
                         <?php if (isset($managers) && !empty($managers)): ?>
                         <?php foreach ($managers as $manager): ?>
@@ -64,14 +64,14 @@
                 </div>
                 <div class="form-field">
                     <label>Status</label>
-                    <select name="is_active" class="form-input">
+                    <select name="is_active" class="filter-dropdown">
                         <option value="1" selected>Active</option>
                         <option value="0">Inactive</option>
                     </select>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary" style="flex: 1; padding: 0.75rem;">Create Warehouse</button>
-                    <a href="/warehouses" class="btn btn-white" style="flex: 1; text-decoration: none; text-align: center;">Cancel</a>
+                    <a href="/warehouses" class="btn-ghost">Cancel</a>
                 </div>
             </form>
         </div>

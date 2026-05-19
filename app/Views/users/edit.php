@@ -53,7 +53,7 @@
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Update User</button>
-                    <a href="/users" class="btn btn-white">Cancel</a>
+                    <a href="/users" class="btn-ghost">Cancel</a>
                 </div>
             </form>
         </div>

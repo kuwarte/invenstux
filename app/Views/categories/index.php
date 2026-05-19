@@ -349,22 +349,22 @@ if (!function_exists('renderCategoryOptions')) {
             <div class="modal-body">
                 <div class="form-group">
                     <label class="form-label">Category Title <span class="req">*</span></label>
-                    <input class="form-input" name="name" placeholder="e.g., Cold Beverages, Electronics" required>
+                    <input class="form-input" name="name" style="width: 100%;" placeholder="Cold Beverages, Electronics..." required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Structural Level Placement</label>
-                    <select class="form-input" name="parent_id">
+                    <select class="filter-dropdown" name="parent_id">
                         <option value="">Top-Level Grouping (Root)</option>
                         <?php renderCategoryOptions($categoryOptions ?? []); ?>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Contextual Details / Description</label>
-                    <textarea class="form-input" name="description" placeholder="Provide context about what types of items fit this sector..."></textarea>
+                    <textarea class="form-input" name="description" style="width: 100%;" placeholder="Provide context about what types of items fit this sector..."></textarea>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-white" onclick="closeModal('addModal')">Discard</button>
+                <button type="button" class="btn-ghost" onclick="closeModal('addModal')">Discard</button>
                 <button type="submit" class="btn btn-primary">Save Category</button>
             </div>
         </form>
@@ -387,22 +387,22 @@ if (!function_exists('renderCategoryOptions')) {
             <div class="modal-body">
                 <div class="form-group">
                     <label class="form-label">Category Title <span class="req">*</span></label>
-                    <input class="form-input" name="name" id="edit_name" required>
+                    <input class="form-input" name="name" style="width:100%" id="edit_name" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Structural Level Placement</label>
-                    <select class="form-input" name="parent_id" id="edit_parent">
+                    <select class="filter-dropdown" name="parent_id" id="edit_parent">
                         <option value="">Top-Level Grouping (Root)</option>
                         <?php renderCategoryOptions($categoryOptions ?? []); ?>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Contextual Details / Description</label>
-                    <textarea class="form-input" name="description" id="edit_desc"></textarea>
+                    <textarea class="form-input" name="description" style="width: 100%;" id="edit_desc"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-white" onclick="closeModal('editModal')">Discard Changes</button>
+                <button type="button" class="btn-ghost" onclick="closeModal('editModal')">Discard Changes</button>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </form>
@@ -434,8 +434,8 @@ if (!function_exists('renderCategoryOptions')) {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-white" onclick="closeModal('deleteModal')">Cancel</button>
-                <button type="submit" class="btn btn-primary btn-delete btn-modal-delete">Delete</button>
+                <button type="button" class="btn-ghost" onclick="closeModal('deleteModal')">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
             </div>
         </form>
     </div>

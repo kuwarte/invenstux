@@ -114,14 +114,6 @@ $categories = $categories ?? [];
         background: #94a3b8;
         cursor: not-allowed;
     }
-    
-    .btn-danger {
-        background: var(--danger);
-        color: white;
-    }
-    .btn-danger:hover {
-        background: #dc2626;
-    }
 
     /* Inputs */
     .form-input {
@@ -384,8 +376,8 @@ $categories = $categories ?? [];
             
             <div style="display: flex; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 24px;">
                 <button type="submit" class="btn btn-primary">Update Product</button>
-                <a href="/products" class="btn btn-white" style="text-decoration: none;">Cancel</a>
-                <button type="button" onclick="confirmDelete()" class="btn btn-danger" style="background: var(--danger); color: white;">Delete</button>
+                <button type="button" onclick="confirmDelete()" class="btn btn-danger">Delete</button>
+                <a href="/products" class="btn-ghost" style="text-decoration: none;">Cancel</a>
             </div>
         </form>
         

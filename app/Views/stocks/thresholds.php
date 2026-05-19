@@ -145,7 +145,7 @@ foreach ($warehouses ?? [] as $w) {
             <p class="text-secondary">Set minimum and maximum stock levels per product for a selected warehouse.</p>
         </div>
         <div>
-            <a href="/stocks" class="btn btn-white">
+            <a href="/stocks" class="btn-ghost">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
                 </svg>
@@ -161,7 +161,7 @@ foreach ($warehouses ?? [] as $w) {
             </span>
             <div class="warehouse-selector">
                 <label for="warehousePicker">Warehouse:</label>
-                <select id="warehousePicker" class="form-input" style="width: 220px;"
+                <select id="warehousePicker" class="filter-dropdown" style="width: 220px;"
                         onchange="window.location.href='/stocks/thresholds?warehouse_id=' + this.value">
                     <option value="">— Choose warehouse —</option>
                     <?php foreach ($warehouses ?? [] as $w): ?>

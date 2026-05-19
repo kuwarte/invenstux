@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/core/Database.php';
 
 $db = (new Database())->connect();
 
-echo "SEEDINg STARTS\n";
+echo "DB SEEDING STARTS\n";
 echo "==================\n\n";
 
 $roles = $db->query("SELECT * FROM roles")->fetchAll();

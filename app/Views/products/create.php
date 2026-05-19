@@ -363,7 +363,7 @@
 
 <div class="form-actions">
     <button type="submit" class="btn btn-primary">Create Product</button>
-    <a href="/products" class="btn btn-white btn-link">Cancel</a>
+    <a href="/products" class="btn-ghost">Cancel</a>
 </div>
         </form>
     </div>

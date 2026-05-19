@@ -142,7 +142,6 @@
     .badge-danger::before { background: #ef4444; }
     .badge-warning { background: #fef3c7; color: #78350f; }
     .badge-warning::before { background: #f59e0b; }
-    .badge-info { background: var(--brand-accent-light); color: var(--brand-accent-dark); font-weight: 700; }
     .badge-info::before { display: none; }
 
     .ledger-filter-bar {
@@ -192,7 +191,7 @@
                 <form method="POST" action="/stocks/in" class="bottom-pinned-form">
                     <div class="form-field">
                         <label>Product Selection</label>
-                        <select name="product_id" class="form-input" required>
+                        <select name="product_id" class="filter-dropdown" style="width: 100%" required>
                             <option value="">Choose item...</option>
                             <?php if (isset($products) && !empty($products)): ?>
                             <?php foreach ($products as $product): ?>
@@ -203,7 +202,7 @@
                     </div>
                     <div class="form-field">
                         <label>Destination Warehouse</label>
-                        <select name="warehouse_id" class="form-input" required>
+                        <select name="warehouse_id" class="filter-dropdown" style="width: 100%" required>
                             <?php if (isset($warehouses) && !empty($warehouses)): ?>
                             <?php foreach ($warehouses as $warehouse): ?>
                                 <option value="<?= $warehouse['id'] ?>"><?= htmlspecialchars($warehouse['name']) ?></option>
@@ -231,7 +230,7 @@
                 <form method="POST" action="/stocks/out" class="bottom-pinned-form">
                     <div class="form-field">
                         <label>Product Selection</label>
-                        <select name="product_id" class="form-input" required>
+                        <select name="product_id" class="filter-dropdown" style="width: 100%" required>
                             <option value="">Choose item...</option>
                             <?php if (isset($products) && !empty($products)): ?>
                             <?php foreach ($products as $product): ?>
@@ -242,7 +241,7 @@
                     </div>
                     <div class="form-field">
                         <label>Source Warehouse</label>
-                        <select name="warehouse_id" class="form-input" required>
+                        <select name="warehouse_id" class="filter-dropdown" style="width: 100%" required>
                             <?php if (isset($warehouses) && !empty($warehouses)): ?>
                             <?php foreach ($warehouses as $warehouse): ?>
                                 <option value="<?= $warehouse['id'] ?>"><?= htmlspecialchars($warehouse['name']) ?></option>
@@ -270,7 +269,7 @@
                 <form method="POST" action="/stocks/transfer" class="bottom-pinned-form">
                     <div class="form-field">
                         <label>Product</label>
-                        <select name="product_id" class="form-input" required>
+                        <select name="product_id" class="filter-dropdown" style="width: 100%" required>
                             <option value="">Choose item...</option>
                             <?php if (isset($products) && !empty($products)): ?>
                             <?php foreach ($products as $product): ?>
@@ -281,7 +280,7 @@
                     </div>
                     <div class="form-field">
                         <label>From Warehouse</label>
-                        <select name="from_warehouse_id" class="form-input" required>
+                        <select name="from_warehouse_id" class="filter-dropdown" style="width: 100%" required>
                             <option value="">Select source...</option>
                             <?php if (isset($warehouses) && !empty($warehouses)): ?>
                             <?php foreach ($warehouses as $warehouse): ?>
@@ -292,7 +291,7 @@
                     </div>
                     <div class="form-field">
                         <label>To Warehouse</label>
-                        <select name="to_warehouse_id" class="form-input" required>
+                        <select name="to_warehouse_id" class="filter-dropdown" style="width: 100%" required>
                             <option value="">Select destination...</option>
                             <?php if (isset($warehouses) && !empty($warehouses)): ?>
                             <?php foreach ($warehouses as $warehouse): ?>
@@ -322,7 +321,7 @@
         <div class="card-header">
             <span class="card-title">Inventory Ledger</span>
             <div class="ledger-filter-bar">
-                <select id="warehouseFilter" class="form-input" style="width: 180px;" onchange="applyFilters()">
+                <select id="warehouseFilter" class="filter-dropdown" onchange="applyFilters()">
                     <option value="">All Warehouses</option>
                     <?php if (isset($warehouses) && !empty($warehouses)): ?>
                     <?php foreach ($warehouses as $warehouse): ?>
@@ -330,7 +329,7 @@
                     <?php endforeach; ?>
                     <?php endif; ?>
                 </select>
-                <select id="statusFilter" class="form-input" style="width: 130px;" onchange="applyFilters()">
+                <select id="statusFilter" class="filter-dropdown" onchange="applyFilters()">
                     <option value="">All Status</option>
                     <option value="critical" <?= (isset($_GET['status']) && $_GET['status'] === 'critical') ? 'selected' : '' ?>>Critical</option>
                     <option value="optimal" <?= (isset($_GET['status']) && $_GET['status'] === 'optimal') ? 'selected' : '' ?>>Optimal</option>
