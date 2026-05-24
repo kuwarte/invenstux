@@ -1,45 +1,133 @@
 <?php
 
+require_once __DIR__ . '/../../core/Logger.php';
+
 class StockRepository
 {
     private PDO $db;
+    private Logger $log;
 
     public function __construct(PDO $db)
     {
-        $this->db = $db;
+        $this->db  = $db;
+        $this->log = new Logger('stock');
     }
 
     public function adjustStock($productId, $warehouseId, $type, $quantity, $userId, $notes = '')
     {
-        $stmt = $this->db->prepare('
-            CALL sp_adjust_stock(
-                :product_id,
-                :warehouse_id,
-                :type,
-                :quantity,
-                :user_id,
-                :notes,
-                @new_quantity,
-                @status,
-                @message
-            )
-        ');
+        $this->log->info('sp_adjust_stock called', [
+            'product_id'   => $productId,
+            'warehouse_id' => $warehouseId,
+            'type'         => $type,
+            'quantity'     => $quantity,
+            'user_id'      => $userId,
+            'notes'        => $notes,
+        ]);
 
-        $stmt->bindValue(':product_id', $productId, PDO::PARAM_INT);
-        $stmt->bindValue(':warehouse_id', $warehouseId, PDO::PARAM_INT);
-        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-        $stmt->bindValue(':quantity', $quantity, PDO::PARAM_INT);
-        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':notes', $notes, PDO::PARAM_STR);
-        $stmt->execute();
+        try {
+            $stmt = $this->db->prepare('
+                CALL sp_adjust_stock(
+                    :product_id,
+                    :warehouse_id,
+                    :type,
+                    :quantity,
+                    :user_id,
+                    :notes,
+                    @new_quantity,
+                    @status,
+                    @message
+                )
+            ');
 
-        $result = $this->db->query('
-            SELECT @new_quantity AS new_quantity,
-                   @status AS status,
-                   @message AS message
-        ')->fetch(PDO::FETCH_ASSOC);
+            $stmt->bindValue(':product_id',   $productId,   PDO::PARAM_INT);
+            $stmt->bindValue(':warehouse_id', $warehouseId, PDO::PARAM_INT);
+            $stmt->bindValue(':type',         $type,        PDO::PARAM_STR);
+            $stmt->bindValue(':quantity',     $quantity,    PDO::PARAM_INT);
+            $stmt->bindValue(':user_id',      $userId,      PDO::PARAM_INT);
+            $stmt->bindValue(':notes',        $notes,       PDO::PARAM_STR);
+            $stmt->execute();
+            $stmt->closeCursor();
 
-        return $result;
+            $result = $this->db->query('
+                SELECT @new_quantity AS new_quantity,
+                       @status       AS status,
+                       @message      AS message
+            ')->fetch(PDO::FETCH_ASSOC);
+
+            $this->log->info('sp_adjust_stock result', $result ?: ['result' => 'null']);
+
+            return $result;
+
+        } catch (Exception $e) {
+            $this->log->error('sp_adjust_stock exception', [
+                'message' => $e->getMessage(),
+                'product_id'   => $productId,
+                'warehouse_id' => $warehouseId,
+                'type'         => $type,
+                'quantity'     => $quantity,
+            ]);
+            throw $e;
+        }
+    }
+
+    public function transferStock(
+        int $productId,
+        int $fromWarehouseId,
+        int $toWarehouseId,
+        int $quantity,
+        int $userId,
+        string $notes = ''
+    ): array {
+        $this->log->info('sp_transfer_stock called', [
+            'product_id'       => $productId,
+            'from_warehouse_id' => $fromWarehouseId,
+            'to_warehouse_id'   => $toWarehouseId,
+            'quantity'          => $quantity,
+            'user_id'           => $userId,
+            'notes'             => $notes,
+        ]);
+
+        try {
+            $stmt = $this->db->prepare('
+                CALL sp_transfer_stock(
+                    :product_id,
+                    :from_warehouse,
+                    :to_warehouse,
+                    :quantity,
+                    :user_id,
+                    :notes,
+                    @status,
+                    @message
+                )
+            ');
+
+            $stmt->bindValue(':product_id',     $productId,       PDO::PARAM_INT);
+            $stmt->bindValue(':from_warehouse', $fromWarehouseId, PDO::PARAM_INT);
+            $stmt->bindValue(':to_warehouse',   $toWarehouseId,   PDO::PARAM_INT);
+            $stmt->bindValue(':quantity',       $quantity,        PDO::PARAM_INT);
+            $stmt->bindValue(':user_id',        $userId,          PDO::PARAM_INT);
+            $stmt->bindValue(':notes',          $notes,           PDO::PARAM_STR);
+            $stmt->execute();
+            $stmt->closeCursor();
+
+            $result = $this->db->query('
+                SELECT @status AS status, @message AS message
+            ')->fetch(PDO::FETCH_ASSOC);
+
+            $this->log->info('sp_transfer_stock result', $result ?: ['result' => 'null']);
+
+            return $result;
+
+        } catch (Exception $e) {
+            $this->log->error('sp_transfer_stock exception', [
+                'message'          => $e->getMessage(),
+                'product_id'       => $productId,
+                'from_warehouse_id' => $fromWarehouseId,
+                'to_warehouse_id'   => $toWarehouseId,
+                'quantity'          => $quantity,
+            ]);
+            throw $e;
+        }
     }
 
     public function getLowStock()
@@ -66,7 +154,7 @@ class StockRepository
             SELECT * FROM vw_stock_movements_detailed
             LIMIT :limit OFFSET :offset
         ');
-        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -81,7 +169,7 @@ class StockRepository
             LIMIT :limit
         ');
         $stmt->bindValue(':product_id', (int)$productId, PDO::PARAM_INT);
-        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':limit',      (int)$limit,     PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -95,7 +183,7 @@ class StockRepository
             LIMIT :limit
         ');
         $stmt->bindValue(':warehouse_id', (int)$warehouseId, PDO::PARAM_INT);
-        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':limit',        (int)$limit,       PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -19,6 +19,11 @@ class UserService
         return $this->userRepo->getAll();
     }
 
+    public function getManagers(): array
+    {
+        return $this->userRepo->getManagers();
+    }
+
     public function getRoles(): array
     {
         return $this->roleRepo->getAll();

@@ -96,47 +96,6 @@ class ProductRepository
         return (int) $this->db->lastInsertId();
     }
 
-    public function createWithStock(array $data, int $userId): array
-    {
-        $stmt = $this->db->prepare("
-            CALL sp_create_product_with_stock(
-                :category_id,
-                :sku,
-                :name,
-                :description,
-                :unit_cost,
-                :warehouse_id,
-                :initial_quantity,
-                :min_stock,
-                :max_stock,
-                :user_id,
-                @product_id,
-                @status,
-                @message
-            )
-        ");
-        
-        $stmt->bindValue(':category_id', $data['category_id'], PDO::PARAM_INT);
-        $stmt->bindValue(':sku', $data['sku'], PDO::PARAM_STR);
-        $stmt->bindValue(':name', $data['name'], PDO::PARAM_STR);
-        $stmt->bindValue(':description', $data['description'] ?? '', PDO::PARAM_STR);
-        $stmt->bindValue(':unit_cost', $data['unit_cost'], PDO::PARAM_STR);
-        $stmt->bindValue(':warehouse_id', $data['warehouse_id'], PDO::PARAM_INT);
-        $stmt->bindValue(':initial_quantity', $data['initial_quantity'] ?? 0, PDO::PARAM_INT);
-        $stmt->bindValue(':min_stock', $data['min_stock'] ?? 10, PDO::PARAM_INT);
-        $stmt->bindValue(':max_stock', $data['max_stock'] ?? 100, PDO::PARAM_INT);
-        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        $result = $this->db->query("
-            SELECT @product_id AS product_id,
-                   @status AS status,
-                   @message AS message
-        ")->fetch(PDO::FETCH_ASSOC);
-        
-        return $result;
-    }
-
     public function update(int $id, array $data): void
     {
         $stmt = $this->db->prepare("

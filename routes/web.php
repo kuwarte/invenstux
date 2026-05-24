@@ -16,6 +16,7 @@ $router->get('/dashboard/filter', 'DashboardController@filter');
 
 // category
 $router->get('/categories', 'CategoryController@index');
+$router->get('/categories/filter', 'CategoryController@filter');
 $router->get('/categories/create', 'CategoryController@indexCreate');
 $router->post('/categories/create', 'CategoryController@create');
 $router->post('/categories/update', 'CategoryController@update');
@@ -44,6 +45,7 @@ $router->get('/stocks', 'StockController@index');
 $router->get('/stocks/filter', 'StockController@filter');
 $router->post('/stocks/in', 'StockController@stockIn');
 $router->post('/stocks/out', 'StockController@stockOut');
+$router->post('/stocks/transfer', 'StockController@transfer');
 $router->get('/stocks/thresholds', 'StockController@indexThresholds');
 $router->post('/stocks/thresholds/update', 'StockController@updateThresholds');
 

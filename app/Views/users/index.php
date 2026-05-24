@@ -7,7 +7,7 @@
         
         <div class="header-actions">
     
-    <a href="/users/create" class="btn btn-primary">Add Member</a>
+    <a href="/users/create" class="btn btn-primary">Add User</a>
 </div>
     </header>
 

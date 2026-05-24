@@ -269,7 +269,7 @@ $averageTicket = $totalTransactions > 0 ? ($totalRevenue / $totalTransactions) :
                 </div>
             </div>
             <div>
-                <button onclick="clearFilters()" class="btn btn-white">
+                <button onclick="clearFilters()" class="btn-ghost">
                     Reset Filters
                 </button>
             </div>
@@ -322,7 +322,7 @@ $averageTicket = $totalTransactions > 0 ? ($totalRevenue / $totalTransactions) :
                             <td class="amount-secondary" style="text-align: right;">₱<?= number_format($sale['payment_amount'] ?? 0, 2); ?></td>
                             <td class="amount-accent" style="text-align: right;">₱<?= number_format($sale['change_amount'] ?? 0, 2); ?></td>
                             <td style="text-align: center;">
-                                <a href="/sales/view?id=<?= htmlspecialchars($sale['sale_id'] ?? ''); ?>" class="btn-action">
+                                <a href="/sales/view?id=<?= htmlspecialchars($sale['sale_id'] ?? ''); ?>" class="btn-ghost">
                                     View
                                     <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>

@@ -29,7 +29,7 @@ $migrations = [
     '006_create_product_warehouse.sql' => 'Product-Warehouse relationships',
     '007_create_permissions.sql' => 'Permissions & RBAC',
     '008_create_sales.sql' => 'Sales & POS tables (3NF)',
-    '009_create_stock_movements.sql' => 'Stock audit trail'
+    '009_create_stock_movements.sql' => 'Stock audit trail',
 ];
 
 echo "RUNNING MIGRATIONS\n";
@@ -53,78 +53,56 @@ foreach ($migrations as $file => $description) {
         
         if (strpos($file, 'procedure') !== false || strpos($file, 'trigger') !== false) {
             $mysqli = new mysqli($env['DB_HOST'], $env['DB_USERNAME'], $env['DB_PASSWORD'], $env['DB_DATABASE']);
-            
+
             if ($mysqli->connect_error) {
                 throw new Exception($mysqli->connect_error);
             }
-            
-            $sql = str_replace(['DELIMITER //', 'DELIMITER ;'], '', $sql);
-            $sql = preg_replace('/--.*$/m', '', $sql); 
-            
-            $parts = preg_split('/(END\/\/|END;)/i', $sql);
-            
-            foreach ($parts as $idx => $part) {
-                $part = trim($part);
-                if (empty($part)) continue;
-                
-                if (stripos($part, 'DROP') !== false) {
-                    $dropStmt = $part;
-                    if (!preg_match('/;\s*$/', $dropStmt)) {
-                        $dropStmt .= ';';
-                    }
-                    try {
-                        $mysqli->query($dropStmt);
-                    } catch (Exception $e) {
-                    }
-                    continue;
+
+            // Strip DELIMITER directives and split on // which is the actual statement terminator
+            $sql = preg_replace('/--[^\n]*$/m', '', $sql);
+            $sql = str_replace('DELIMITER //', '', $sql);
+            $sql = str_replace('DELIMITER ;', '', $sql);
+
+            // Split on // to get individual CREATE TRIGGER / CREATE PROCEDURE blocks
+            $blocks = array_filter(array_map('trim', explode('//', $sql)));
+
+            foreach ($blocks as $block) {
+                if (empty($block)) continue;
+
+                // Drop existing before recreating
+                if (preg_match('/CREATE\s+(?:DEFINER\s*=\s*\S+\s+)?TRIGGER\s+(\w+)/i', $block, $m)) {
+                    $mysqli->query("DROP TRIGGER IF EXISTS `{$m[1]}`");
+                } elseif (preg_match('/CREATE\s+(?:DEFINER\s*=\s*\S+\s+)?PROCEDURE\s+(\w+)/i', $block, $m)) {
+                    $mysqli->query("DROP PROCEDURE IF EXISTS `{$m[1]}`");
                 }
-                
-                if (stripos($part, 'CREATE PROCEDURE') !== false || stripos($part, 'CREATE TRIGGER') !== false) {
-                    $part .= ' END';
-                    
-                    if (!$mysqli->query($part)) {
-                        throw new Exception($mysqli->error);
-                    }
+
+                if (!$mysqli->query($block)) {
+                    throw new Exception($mysqli->error . "\n\nFailed block:\n" . substr($block, 0, 300));
                 }
             }
-            
+
             $mysqli->close();
         } 
         else if (strpos($file, 'view') !== false) {
-            $sql = preg_replace('/--.*$/m', '', $sql);
-            
-            $statements = explode(';', $sql);
-            $currentView = '';
-            
+            $sql = preg_replace('/--[^\n]*$/m', '', $sql);
+
+            // Extract each CREATE VIEW block by splitting on semicolons,
+            // then reassemble — views don't use DELIMITER so ; is the terminator.
+            // We drop-and-recreate each view for idempotency.
+            $statements = array_filter(array_map('trim', explode(';', $sql)));
             foreach ($statements as $statement) {
-                $statement = trim($statement);
                 if (empty($statement)) continue;
-                
-                if (stripos($statement, 'DROP VIEW') !== false) {
-                    try {
-                        $pdo->exec($statement);
-                    } catch (Exception $e) {
-                    }
-                } else if (stripos($statement, 'CREATE VIEW') !== false) {
-                    $currentView = $statement;
-                } else if (!empty($currentView)) {
-                    $currentView .= ';' . $statement;
-                    
-                    if (stripos($statement, 'ORDER BY') !== false || 
-                        stripos($statement, 'GROUP BY') !== false ||
-                        preg_match('/FROM\s+\w+\s*$/i', $statement)) {
-                        $pdo->exec($currentView);
-                        $currentView = '';
-                    }
+
+                // Drop the view before recreating it
+                if (preg_match('/CREATE\s+(?:OR\s+REPLACE\s+)?VIEW\s+(\w+)/i', $statement, $m)) {
+                    $pdo->exec("DROP VIEW IF EXISTS `{$m[1]}`");
                 }
-            }
-            
-            if (!empty($currentView)) {
-                $pdo->exec($currentView);
+
+                $pdo->exec($statement);
             }
         }
         else {
-            $sql = preg_replace('/--.*$/m', '', $sql);
+            $sql = preg_replace('/--[^\n]*$/m', '', $sql);
             $statements = array_filter(array_map('trim', explode(';', $sql)));
             foreach ($statements as $statement) {
                 if (!empty($statement)) {
@@ -137,7 +115,8 @@ foreach ($migrations as $file => $description) {
         $success++;
         
     } catch (Exception $e) {
-        if (strpos($e->getMessage(), 'already exists') !== false) {
+        if (strpos($e->getMessage(), 'already exists') !== false ||
+            strpos($e->getMessage(), 'Duplicate key name') !== false) {
             printf("  [-] %-35s [SKIPPED]\n", $description);
             $skipped++;
         } else {
@@ -170,10 +149,17 @@ foreach ($seeds as $file => $description) {
     
     try {
         $sql = file_get_contents($path);
-        $pdo->exec($sql);
+        $sql = preg_replace('/--[^\n]*$/m', '', $sql);
+        $statements = array_filter(array_map('trim', explode(';', $sql)));
+        foreach ($statements as $statement) {
+            if (!empty($statement)) {
+                $pdo->exec($statement);
+            }
+        }
         printf("  [/] %-35s [SUCCESS]\n", $description);
     } catch (Exception $e) {
-        printf("  [-] %-35s [SKIPPED]\n", $description);
+        printf("  [x] %-35s [ERROR]\n", $description);
+        echo "    > " . substr($e->getMessage(), 0, 100) . "\n";
     }
 }
 

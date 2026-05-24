@@ -47,9 +47,9 @@ class WarehouseController extends Controller
     {
         $this->authorize('manage_warehouses');
         
-        $users = $this->userService->getAll();
+        $managers = $this->userService->getManagers();
         
-        $this->view('warehouses/create', compact('users'));
+        $this->view('warehouses/create', compact('managers'));
     }
 
     public function create(): void
@@ -86,9 +86,9 @@ class WarehouseController extends Controller
             return;
         }
         
-        $users = $this->userService->getAll();
+        $managers = $this->userService->getManagers();
         
-        $this->view('warehouses/edit', compact('warehouse', 'users'));
+        $this->view('warehouses/edit', compact('warehouse', 'managers'));
     }
 
     public function update(): void

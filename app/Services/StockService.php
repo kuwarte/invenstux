@@ -3,28 +3,31 @@
 require_once __DIR__ . '/../Repositories/ProductRepository.php';
 require_once __DIR__ . '/../Repositories/WarehouseRepository.php';
 require_once __DIR__ . '/../Repositories/ProductWarehouseRepository.php';
-require_once __DIR__ . '/../Repositories/StockMovementRepository.php';
+require_once __DIR__ . '/../Repositories/StockRepository.php';
+require_once __DIR__ . '/../../core/Logger.php';
 
 class StockService
 {
     private ProductRepository $productRepo;
     private WarehouseRepository $warehouseRepo;
     private ProductWarehouseRepository $stockRepo;
-    private StockMovementRepository $movementRepo;
+    private StockRepository $stockProcRepo;
+    private Logger $log;
 
     public function __construct(PDO $db)
     {
-        $this->productRepo = new ProductRepository($db);
+        $this->productRepo   = new ProductRepository($db);
         $this->warehouseRepo = new WarehouseRepository($db);
-        $this->stockRepo = new ProductWarehouseRepository($db);
-        $this->movementRepo = new StockMovementRepository($db);
+        $this->stockRepo     = new ProductWarehouseRepository($db);
+        $this->stockProcRepo = new StockRepository($db);
+        $this->log           = new Logger('stock');
     }
 
     public function getStockDashboardData(array $filters = []): array
     {
         return [
             'stockItems' => $this->stockRepo->getAllStock($filters),
-            'products' => $this->productRepo->getAll(),
+            'products'   => $this->productRepo->getAll(),
             'warehouses' => $this->warehouseRepo->getAll()
         ];
     }
@@ -37,12 +40,16 @@ class StockService
     public function getThresholdData(): array
     {
         return [
-            'products' => $this->productRepo->getAll(),
+            'products'   => $this->productRepo->getAll(),
             'warehouses' => $this->warehouseRepo->getAll(),
             'thresholds' => $this->stockRepo->getAll()
         ];
     }
 
+    /**
+     * Add stock to a warehouse via sp_adjust_stock (IN).
+     * SQL is the brain — the procedure validates, updates, and logs atomically.
+     */
     public function stockIn(
         int $productId,
         int $warehouseId,
@@ -50,23 +57,28 @@ class StockService
         int $userId,
         ?string $notes = null
     ): void {
-        $this->stockRepo->updateQuantity(
-            $productId,
-            $warehouseId,
-            $quantity
-        );
+        $this->log->info('stockIn requested', [
+            'product_id' => $productId, 'warehouse_id' => $warehouseId,
+            'quantity' => $quantity, 'user_id' => $userId,
+        ]);
 
-        $this->movementRepo->logMovement(
-            $productId,
-            $warehouseId,
-            'IN',
-            $quantity,
-            $userId,
-            null,
+        $result = $this->stockProcRepo->adjustStock(
+            $productId, $warehouseId, 'IN', $quantity, $userId,
             $notes ?? 'Stock in operation'
         );
+
+        if ($result['status'] !== 'SUCCESS') {
+            $this->log->error('stockIn failed', ['reason' => $result['message']]);
+            throw new Exception($result['message']);
+        }
+
+        $this->log->info('stockIn succeeded', ['new_quantity' => $result['new_quantity']]);
     }
 
+    /**
+     * Remove stock from a warehouse via sp_adjust_stock (OUT).
+     * SQL is the brain — the procedure validates, updates, and logs atomically.
+     */
     public function stockOut(
         int $productId,
         int $warehouseId,
@@ -74,21 +86,55 @@ class StockService
         int $userId,
         ?string $notes = null
     ): void {
-        $this->stockRepo->updateQuantity(
-            $productId,
-            $warehouseId,
-            -$quantity
-        );
+        $this->log->info('stockOut requested', [
+            'product_id' => $productId, 'warehouse_id' => $warehouseId,
+            'quantity' => $quantity, 'user_id' => $userId,
+        ]);
 
-        $this->movementRepo->logMovement(
-            $productId,
-            $warehouseId,
-            'OUT',
-            -$quantity,
-            $userId,
-            null,
+        $result = $this->stockProcRepo->adjustStock(
+            $productId, $warehouseId, 'OUT', $quantity, $userId,
             $notes ?? 'Stock out operation'
         );
+
+        if ($result['status'] !== 'SUCCESS') {
+            $this->log->error('stockOut failed', ['reason' => $result['message']]);
+            throw new Exception($result['message']);
+        }
+
+        $this->log->info('stockOut succeeded', ['new_quantity' => $result['new_quantity']]);
+    }
+
+    /**
+     * Transfer stock between two warehouses via sp_transfer_stock.
+     * SQL is the brain — the procedure validates both sides and logs TRANSFER_OUT/IN atomically.
+     */
+    public function transferStock(
+        int $productId,
+        int $fromWarehouseId,
+        int $toWarehouseId,
+        int $quantity,
+        int $userId,
+        ?string $notes = null
+    ): void {
+        $this->log->info('transferStock requested', [
+            'product_id'        => $productId,
+            'from_warehouse_id' => $fromWarehouseId,
+            'to_warehouse_id'   => $toWarehouseId,
+            'quantity'          => $quantity,
+            'user_id'           => $userId,
+        ]);
+
+        $result = $this->stockProcRepo->transferStock(
+            $productId, $fromWarehouseId, $toWarehouseId, $quantity, $userId,
+            $notes ?? ''
+        );
+
+        if ($result['status'] !== 'SUCCESS') {
+            $this->log->error('transferStock failed', ['reason' => $result['message']]);
+            throw new Exception($result['message']);
+        }
+
+        $this->log->info('transferStock succeeded');
     }
 
     public function updateThresholds(array $data): void
@@ -98,41 +144,24 @@ class StockService
 
         foreach ($minStocks as $productId => $warehouses) {
             foreach ($warehouses as $warehouseId => $minStock) {
-
                 $maxStock = $maxStocks[$productId][$warehouseId] ?? 100;
-
-                $this->stockRepo->updateThresholds(
-                    $productId,
-                    $warehouseId,
-                    $minStock,
-                    $maxStock
-                );
+                $this->stockRepo->updateThresholds($productId, $warehouseId, $minStock, $maxStock);
             }
         }
     }
 
     public function getLowStockAlerts(): array
     {
-        return $this->stockRepo->getLowStock();
+        return $this->stockProcRepo->getLowStock();
     }
 
-    public function getProductMovements(
-        int $productId,
-        int $limit = 100
-    ): array {
-        return $this->movementRepo->getMovementsByProduct(
-            $productId,
-            $limit
-        );
+    public function getProductMovements(int $productId, int $limit = 100): array
+    {
+        return $this->stockProcRepo->getMovementsByProduct($productId, $limit);
     }
 
-    public function getWarehouseMovements(
-        int $warehouseId,
-        int $limit = 100
-    ): array {
-        return $this->movementRepo->getMovementsByWarehouse(
-            $warehouseId,
-            $limit
-        );
+    public function getWarehouseMovements(int $warehouseId, int $limit = 100): array
+    {
+        return $this->stockProcRepo->getMovementsByWarehouse($warehouseId, $limit);
     }
 }

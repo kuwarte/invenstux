@@ -41,11 +41,7 @@ class ProductController extends Controller
         $search = $_GET['search'] ?? '';
         $categoryId = $_GET['category_id'] ?? '';
 
-        error_log("Product Filter Called - showInactive: " . ($showInactive ? 'true' : 'false') . ", search: '$search', categoryId: '$categoryId'");
-
         $products = $this->productService->getFilteredProducts($showInactive, $search, $categoryId);
-        
-        error_log("Product Filter Results: " . count($products) . " products");
 
         header('Content-Type: application/json');
         echo json_encode($products);

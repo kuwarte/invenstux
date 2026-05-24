@@ -37,7 +37,6 @@ JOIN permissions p
 WHERE r.name = 'staff'
 AND p.name IN (
     'manage_products',
-    'manage_warehouses',
     'manage_stock',
     'manage_categories'
 );

@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     role_id       INT UNSIGNED NOT NULL,
     username      VARCHAR(80) NOT NULL UNIQUE,
@@ -8,6 +8,6 @@ CREATE TABLE users (
     is_active     TINYINT(1) DEFAULT 1,
     last_login_at DATETIME,
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
+    

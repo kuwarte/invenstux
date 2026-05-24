@@ -9,7 +9,6 @@ class PermissionRepository
         $this->db = $db;
     }
 
-    // get all permission per role
     public function getPermissionsByRole(int $roleId): array
     {
         $stmt = $this->db->prepare("

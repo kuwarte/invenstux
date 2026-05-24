@@ -16,17 +16,29 @@ $pageTitle = ($currentPage === 'pos')
     <title><?= APP_NAME ?></title>
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/layouts.main.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
     <link rel="stylesheet" href="/assets/css/dashboard.index.css">
     <link rel="stylesheet" href="/assets/css/dashboard.top-revenue.css">
     <link rel="stylesheet" href="/assets/css/users.index.css">
     <script src="/assets/js/layouts.main.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/assets/js/dashboard.index.js" defer></script>
-    <script src="/assets/js/sales.pos.js" defer></script>
-    <script src="/assets/js/sales.index.js" defer></script>
-    <script src="/assets/js/categories.index.js" defer></script>
-    <script src="/assets/js/products.index.js" defer></script>
+
+    <?php if ($currentPage === 'dashboard'): ?>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="/assets/js/dashboard.index.js" defer></script>
+    <?php elseif ($currentPage === 'pos'): ?>
+        <script src="/assets/js/sales.pos.js" defer></script>
+    <?php elseif ($currentPage === 'sales'): ?>
+        <script src="/assets/js/sales.index.js" defer></script>
+    <?php elseif ($currentPage === 'categories'): ?>
+        <script src="/assets/js/categories.index.js" defer></script>
+    <?php elseif ($currentPage === 'products'): ?>
+        <script src="/assets/js/products.index.js" defer></script>
+    <?php elseif ($currentPage === 'warehouses'): ?>
+        <script src="/assets/js/warehouses.index.js" defer></script>
+    <?php elseif ($currentPage === 'stocks'): ?>
+        <script src="/assets/js/stocks.index.js" defer></script>
+    <?php endif; ?>
 </head>
 <body>
 
@@ -147,13 +159,13 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
         <div class="sidebar-footer">
             <div class="user-dropdown" id="userDropdown">
                 <a href="/users/settings" class="dropdown-item">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                     Settings
                 </a>
                 <div class="dropdown-sep"></div>
                 <form method="POST" action="/logout" style="margin: 0;">
                     <button type="submit" class="dropdown-item logout">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                         Sign Out
                     </button>
                 </form>

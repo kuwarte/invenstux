@@ -314,8 +314,8 @@ $sale = $sale ?? [];
     </div>
 
     <div class="receipt-actions">
+        <button onclick="window.print()" class="btn-ghost">Print Receipt</button>
         <a href="/pos" class="btn btn-primary">New Sale</a>
-        <button onclick="window.print()" class="btn btn-secondary">Print Receipt</button>
-        <a href="/sales" class="btn btn-secondary">View History</a>
+        <a href="/sales" class="btn-ghost">View History</a>
     </div>
 </div>
