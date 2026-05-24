@@ -309,7 +309,7 @@ $averageTicket = $totalTransactions > 0 ? ($totalRevenue / $totalTransactions) :
                     <?php foreach ($sales as $sale): ?>
                         <tr>
                             <td><span class="monospace-id">#<?= htmlspecialchars($sale['sale_id'] ?? ''); ?></span></td>
-                            <td style="font-weight: 500; color: var(--text-secondary);"><?= date('M d, Y • h:i A', strtotime($sale['sale_date'] ?? 'now')); ?></td>
+                            <td style="font-weight: 500; color: var(--text-secondary);"><?= date('M d, Y | h:i A', strtotime($sale['sale_date'] ?? 'now')); ?></td>
                             <td>
                                 <div class="cashier-badge">
                                     <div class="avatar-circle">
