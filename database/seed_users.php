@@ -14,32 +14,40 @@ foreach ($roles as $role) {
 }
 
 $accounts = [
+    
     [
         'role' => 'admin',
-        'username' => 'admin',
-        'email' => 'admin@example.com',
-        'full_name' => 'Admin User',
+        'username' => 'jaspercuarte',
+        'email' => 'jasper.cuarte@invenstux.com',
+        'full_name' => 'Jasper Cuarte',
         'password' => 'admin123'
     ],
     [
         'role' => 'manager',
-        'username' => 'manager',
-        'email' => 'manager@example.com',
-        'full_name' => 'Store Manager',
+        'username' => 'carlothomassevilla',
+        'email' => 'carlo.sevilla@invenstux.com',
+        'full_name' => 'Carlo Thomas Sevilla',
         'password' => 'manager123'
     ],
     [
         'role' => 'cashier',
-        'username' => 'cashier',
-        'email' => 'cashier@example.com',
-        'full_name' => 'Cashier User',
+        'username' => 'nathanielroque',
+        'email' => 'nathaniel.roque@invenstux.com',
+        'full_name' => 'Nathaniel Roque',
         'password' => 'cashier123'
     ],
     [
         'role' => 'staff',
-        'username' => 'staff',
-        'email' => 'staff@example.com',
-        'full_name' => 'Inventory Staff Member',
+        'username' => 'nathanbarrera',
+        'email' => 'nathan.barrera@invenstux.com',
+        'full_name' => 'Nathan Barrera',
+        'password' => 'staff123'
+    ],
+    [
+        'role' => 'staff',
+        'username' => 'jonashpasia',
+        'email' => 'jonash.pasia@invenstux.com',
+        'full_name' => 'Jonash Pasia',
         'password' => 'staff123'
     ]
 ];

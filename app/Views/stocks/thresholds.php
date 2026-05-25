@@ -245,7 +245,7 @@ foreach ($warehouses ?? [] as $w) {
                         </svg>
                         Save Thresholds
                     </button>
-                    <a href="/stocks" class="btn btn-white">Cancel</a>
+                    <a href="/stocks" class="btn-ghost">Cancel</a>
                 </div>
             </form>
         <?php endif; ?>

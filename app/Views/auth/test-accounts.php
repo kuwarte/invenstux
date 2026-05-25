@@ -40,8 +40,12 @@
                 </div>
                 <div class="creds-box">
                     <div class="cred-row">
+                        <span class="cred-label">Name</span>
+                        <div class="cred-value" title="Click to copy">Jasper Cuarte</div>
+                    </div>
+                    <div class="cred-row">
                         <span class="cred-label">Email</span>
-                        <div class="cred-value" title="Click to copy">admin@example.com</div>
+                        <div class="cred-value" title="Click to copy">jasper.cuarte@invenstux.com</div>
                     </div>
                     <div class="cred-row">
                         <span class="cred-label">Password</span>
@@ -66,8 +70,12 @@
                 </div>
                 <div class="creds-box">
                     <div class="cred-row">
+                        <span class="cred-label">Name</span>
+                        <div class="cred-value" title="Click to copy">Carlo Thomas Sevilla</div>
+                    </div>
+                    <div class="cred-row">
                         <span class="cred-label">Email</span>
-                        <div class="cred-value" title="Click to copy">manager@example.com</div>
+                        <div class="cred-value" title="Click to copy">carlo.sevilla@invenstux.com</div>
                     </div>
                     <div class="cred-row">
                         <span class="cred-label">Password</span>
@@ -92,8 +100,12 @@
                 </div>
                 <div class="creds-box">
                     <div class="cred-row">
+                        <span class="cred-label">Name</span>
+                        <div class="cred-value" title="Click to copy">Nathaniel Roque</div>
+                    </div>
+                    <div class="cred-row">
                         <span class="cred-label">Email</span>
-                        <div class="cred-value" title="Click to copy">cashier@example.com</div>
+                        <div class="cred-value" title="Click to copy">nathaniel.roque@invenstux.com</div>
                     </div>
                     <div class="cred-row">
                         <span class="cred-label">Password</span>
@@ -118,8 +130,43 @@
                 </div>
                 <div class="creds-box">
                     <div class="cred-row">
+                        <span class="cred-label">Name</span>
+                        <div class="cred-value" title="Click to copy">Nathan Barrera</div>
+                    </div>
+                    <div class="cred-row">
                         <span class="cred-label">Email</span>
-                        <div class="cred-value" title="Click to copy">staff@example.com</div>
+                        <div class="cred-value" title="Click to copy">nathan.barrera@invenstux.com</div>
+                    </div>
+                    <div class="cred-row">
+                        <span class="cred-label">Password</span>
+                        <div class="cred-value" title="Click to copy">staff123</div>
+                    </div>
+                </div>
+                <ul class="features-list">
+                    <li>Create, edit, and delete products</li>
+                    <li>Stock in/out operations</li>
+                    <li>Manage product categories</li>
+                </ul>
+            </div>
+
+            <div class="role-card">
+                <div class="card-top">
+                    <div class="role-icon staff">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div class="role-details staff">
+                        <div class="role-name">Inventory Staff</div>
+                        <span class="access-badge">Inventory Access</span>
+                    </div>
+                </div>
+                <div class="creds-box">
+                    <div class="cred-row">
+                        <span class="cred-label">Name</span>
+                        <div class="cred-value" title="Click to copy">Jonash Pasia</div>
+                    </div>
+                    <div class="cred-row">
+                        <span class="cred-label">Email</span>
+                        <div class="cred-value" title="Click to copy">jonash.pasia@invenstux.com</div>
                     </div>
                     <div class="cred-row">
                         <span class="cred-label">Password</span>
