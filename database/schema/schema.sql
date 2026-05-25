@@ -484,9 +484,7 @@ END//
 
 DELIMITER ;
 
--- ============================================================
--- 012: Views
--- ============================================================
+-- Views
 
 -- Global dashboard counters
 CREATE OR REPLACE VIEW vw_dashboard_global_counters AS
@@ -644,10 +642,7 @@ LEFT JOIN sale_items si ON s.id = si.sale_id
 GROUP BY DATE(s.created_at)
 ORDER BY sale_date DESC;
 
-
--- ============================================================
--- 013: Indexes
--- ============================================================
+-- Indexes
 
 -- products: full-text search on name
 CREATE FULLTEXT INDEX idx_products_name_fulltext       ON products(name);
