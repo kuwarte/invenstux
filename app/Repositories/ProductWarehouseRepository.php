@@ -107,4 +107,23 @@ class ProductWarehouseRepository
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM product_warehouse WHERE quantity <= min_stock AND min_stock > 0");
         return (int) $stmt->fetch()['count'];
     }
+
+    /**
+     * Returns products that have at least 1 unit in the given warehouse.
+     * Used to populate the transfer form's product dropdown dynamically.
+     */
+    public function getProductsWithStock(int $warehouseId): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT p.id, p.name, p.sku, pw.quantity
+            FROM product_warehouse pw
+            INNER JOIN products p ON pw.product_id = p.id
+            WHERE pw.warehouse_id = ?
+              AND pw.quantity > 0
+              AND p.is_active = 1
+            ORDER BY p.name
+        ");
+        $stmt->execute([$warehouseId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

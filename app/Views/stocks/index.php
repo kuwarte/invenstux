@@ -266,21 +266,11 @@
                 <span class="stock-card-title">Warehouse Transfer</span>
             </div>
             <div class="stock-card-body">
-                <form method="POST" action="/stocks/transfer" class="bottom-pinned-form">
-                    <div class="form-field">
-                        <label>Product</label>
-                        <select name="product_id" class="filter-dropdown" style="width: 100%" required>
-                            <option value="">Choose item...</option>
-                            <?php if (isset($products) && !empty($products)): ?>
-                            <?php foreach ($products as $product): ?>
-                                <option value="<?= $product['id'] ?>"><?= htmlspecialchars($product['name']) ?> (<?= htmlspecialchars($product['sku']) ?>)</option>
-                            <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
-                    </div>
+                <form method="POST" action="/stocks/transfer" class="bottom-pinned-form" id="transferForm">
                     <div class="form-field">
                         <label>From Warehouse</label>
-                        <select name="from_warehouse_id" class="filter-dropdown" style="width: 100%" required>
+                        <select name="from_warehouse_id" id="transferFromWarehouse" class="filter-dropdown" style="width: 100%" required
+                                onchange="loadTransferProducts(this.value)">
                             <option value="">Select source...</option>
                             <?php if (isset($warehouses) && !empty($warehouses)): ?>
                             <?php foreach ($warehouses as $warehouse): ?>
@@ -288,6 +278,13 @@
                             <?php endforeach; ?>
                             <?php endif; ?>
                         </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Product</label>
+                        <select name="product_id" id="transferProduct" class="filter-dropdown" style="width: 100%" required disabled>
+                            <option value="">Select source warehouse first...</option>
+                        </select>
+                        <span id="transferProductHint" style="font-size:0.78rem; color:var(--text-secondary); margin-top:4px; display:none;"></span>
                     </div>
                     <div class="form-field">
                         <label>To Warehouse</label>
@@ -302,7 +299,7 @@
                     </div>
                     <div class="form-field">
                         <label>Quantity</label>
-                        <input type="number" name="quantity" class="form-input" required min="1" placeholder="0">
+                        <input type="number" name="quantity" id="transferQty" class="form-input" required min="1" placeholder="0">
                     </div>
                     <div class="form-field">
                         <label>Notes <span style="font-weight:400; color:var(--text-secondary);">(optional)</span></label>
@@ -315,6 +312,63 @@
             </div>
         </div>
     </div>
+
+    <script>
+    function loadTransferProducts(warehouseId) {
+        const productSelect = document.getElementById('transferProduct');
+        const hint          = document.getElementById('transferProductHint');
+        const qtyInput      = document.getElementById('transferQty');
+
+        productSelect.innerHTML = '<option value="">Loading...</option>';
+        productSelect.disabled  = true;
+        hint.style.display      = 'none';
+        qtyInput.max            = '';
+
+        if (!warehouseId) {
+            productSelect.innerHTML = '<option value="">Select source warehouse first...</option>';
+            return;
+        }
+
+        fetch('/stocks/products-in-warehouse?warehouse_id=' + warehouseId)
+            .then(r => r.json())
+            .then(products => {
+                productSelect.innerHTML = '<option value="">Choose item...</option>';
+
+                if (products.length === 0) {
+                    productSelect.innerHTML = '<option value="">No stock in this warehouse</option>';
+                    hint.textContent   = 'This warehouse has no available stock to transfer.';
+                    hint.style.display = 'block';
+                    return;
+                }
+
+                products.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value            = p.id;
+                    opt.dataset.quantity = p.quantity;
+                    opt.textContent      = p.name + ' (' + p.sku + ') — ' + p.quantity + ' available';
+                    productSelect.appendChild(opt);
+                });
+
+                productSelect.disabled = false;
+
+                productSelect.addEventListener('change', function () {
+                    const selected = this.options[this.selectedIndex];
+                    const qty      = selected.dataset.quantity;
+                    if (qty) {
+                        qtyInput.max         = qty;
+                        hint.textContent     = 'Max transferable: ' + qty + ' units';
+                        hint.style.display   = 'block';
+                    } else {
+                        qtyInput.max         = '';
+                        hint.style.display   = 'none';
+                    }
+                }, { once: false });
+            })
+            .catch(() => {
+                productSelect.innerHTML = '<option value="">Failed to load products</option>';
+            });
+    }
+    </script>
 
     <!-- INVENTORY LEDGER TABLE -->
     <div class="card">

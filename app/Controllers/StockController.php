@@ -109,6 +109,25 @@ class StockController extends Controller
         $this->redirect('/stocks');
     }
 
+    public function productsInWarehouse(): void
+    {
+        header('Content-Type: application/json');
+        $warehouseId = (int) ($_GET['warehouse_id'] ?? 0);
+
+        if (!$warehouseId) {
+            echo json_encode([]);
+            exit;
+        }
+
+        try {
+            $products = $this->stockService->getProductsInWarehouse($warehouseId);
+            echo json_encode($products);
+        } catch (Exception $e) {
+            echo json_encode([]);
+        }
+        exit;
+    }
+
     public function indexThresholds(): void
     {
         $data = $this->stockService->getThresholdData();

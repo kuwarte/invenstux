@@ -141,13 +141,35 @@ class StockService
     {
         $minStocks = $data['min_stock'] ?? [];
         $maxStocks = $data['max_stock'] ?? [];
+        $errors    = [];
 
         foreach ($minStocks as $productId => $warehouses) {
             foreach ($warehouses as $warehouseId => $minStock) {
-                $maxStock = $maxStocks[$productId][$warehouseId] ?? 100;
+                $minStock = (int) $minStock;
+                $maxStock = (int) ($maxStocks[$productId][$warehouseId] ?? 0);
+
+                if ($minStock < 0 || $maxStock < 0) {
+                    $errors[] = "Product #{$productId}: thresholds cannot be negative.";
+                    continue;
+                }
+
+                if ($maxStock > 0 && $minStock > $maxStock) {
+                    $errors[] = "Product #{$productId}: minimum ({$minStock}) cannot be greater than maximum ({$maxStock}).";
+                    continue;
+                }
+
                 $this->stockRepo->updateThresholds($productId, $warehouseId, $minStock, $maxStock);
             }
         }
+
+        if (!empty($errors)) {
+            throw new Exception(implode(' ', $errors));
+        }
+    }
+
+    public function getProductsInWarehouse(int $warehouseId): array
+    {
+        return $this->stockRepo->getProductsWithStock($warehouseId);
     }
 
     public function getLowStockAlerts(): array
