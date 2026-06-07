@@ -167,6 +167,15 @@ class StockService
         }
     }
 
+    public function getAuditData(): array
+    {
+        return [
+            'movements'  => $this->stockProcRepo->getMovements(500),
+            'warehouses' => $this->warehouseRepo->getAll(),
+            'products'   => $this->productRepo->getActive(),
+        ];
+    }
+
     public function getProductsInWarehouse(int $warehouseId): array
     {
         return $this->stockRepo->getProductsWithStock($warehouseId);

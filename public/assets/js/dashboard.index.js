@@ -46,82 +46,100 @@ const escapeHtml = (str) =>
 	);
 
 const togglePdfModal = (show) => {
-	const modal = document.getElementById("pdfExportModal");
+	const modal = document.getElementById("exportModal");
 	if (modal) modal.classList.toggle("active", show);
 };
 
-window.openPdfModal = () => togglePdfModal(true);
-window.closePdfModal = () => togglePdfModal(false);
+window.openExportModal  = () => togglePdfModal(true);
+window.closeExportModal = () => togglePdfModal(false);
 
-window.generatePdf = () => {
-	if (typeof html2pdf === "undefined") return console.error("html2pdf library is missing.");
+// Keep old names as aliases so any stray references don't break
+window.openPdfModal  = window.openExportModal;
+window.closePdfModal = window.closeExportModal;
 
-	const selectedFormat = document.querySelector('input[name="pdfFormat"]:checked');
-	if (!selectedFormat) return;
+window.runExport = () => {
+	const format  = document.querySelector('input[name="exportFormat"]:checked')?.value  ?? 'csv';
+	const dataset = document.querySelector('input[name="exportDataset"]:checked')?.value ?? 'top_products';
+	const d       = window.dashboardData || {};
+	const range   = d.range || 'today';
+	const ts      = new Date().toISOString().slice(0, 10);
 
-	const btn = document.querySelector(".btn-export");
-	if (btn) {
-		btn.disabled = true;
-		btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Generating...`;
+	let rows = [];
+	let filename = '';
+
+	if (dataset === 'top_products') {
+		filename = `top_products_${range}_${ts}`;
+		rows = (d.topProducts || []).map((p, i) => ({
+			rank:          i + 1,
+			name:          p.name        ?? '',
+			sku:           p.sku         ?? '',
+			units_sold:    p.total_sold  ?? 0,
+			total_revenue: p.total_revenue ?? 0,
+		}));
+	} else if (dataset === 'low_stock') {
+		filename = `inventory_risk_${ts}`;
+		rows = (d.lowStockItems || []).map(item => ({
+			product:       item.product_name  ?? '',
+			sku:           item.sku           ?? '',
+			warehouse:     item.warehouse_name ?? '',
+			current_stock: item.quantity       ?? 0,
+			min_threshold: item.minimum_threshold ?? 0,
+			status:        item.stock_status  ?? 'CRITICAL',
+		}));
+	} else {
+		filename = `dashboard_summary_${range}_${ts}`;
+		rows = [{
+			range:           range,
+			total_products:  d.totalProducts  ?? 0,
+			total_warehouses:d.totalWarehouses ?? 0,
+			total_sales:     d.totalSales      ?? 0,
+			total_revenue:   d.totalRevenue    ?? 0,
+			target_revenue:  d.targetRevenue   ?? 0,
+			exported_at:     new Date().toISOString(),
+		}];
 	}
 
-	const format = selectedFormat.value;
-	let element, filename;
-
-	switch (format) {
-		case "summary":
-			element = document.querySelector(".stats-grid");
-			filename = "Dashboard_Summary.pdf";
-			break;
-		case "revenue":
-			const dataGrid = document.querySelector(".data-grid");
-			if (dataGrid && dataGrid.children[0]) {
-				element = document.createElement("div");
-				element.innerHTML = `
-                    <div style="margin-bottom: 24px; font-family: sans-serif;">
-                        <h2 style="font-size: 24px; font-weight: 700; margin: 0 0 8px 0; color: #111827;">Top Revenue Generators</h2>
-                        <p style="color: #6b7280; margin: 0;">Generated on ${new Date().toLocaleDateString()}</p>
-                    </div>`;
-				element.appendChild(dataGrid.children[0].cloneNode(true));
-				filename = "Revenue_Report.pdf";
-			}
-			break;
-		default:
-			element = document.querySelector(".dashboard-wrapper");
-			filename = "Executive_Summary_Report.pdf";
+	if (format === 'csv') {
+		downloadCsv(rows, filename + '.csv');
+	} else {
+		downloadJson(rows, filename + '.json');
 	}
 
-	if (!element) {
-		if (btn) {
-			btn.disabled = false;
-			btn.textContent = "Generate PDF";
-		}
-		return console.error("Export element not found.");
-	}
-
-	html2pdf()
-		.set({
-			margin: [15, 15, 15, 15],
-			filename,
-			image: { type: "jpeg", quality: 0.98 },
-			html2canvas: { scale: 2, useCORS: true, logging: false },
-			jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
-		})
-		.from(element)
-		.save()
-		.finally(() => {
-			closePdfModal();
-			if (btn) {
-				btn.disabled = false;
-				btn.textContent = "Generate PDF";
-			}
-		});
+	closeExportModal();
 };
 
+function downloadCsv(rows, filename) {
+	if (!rows.length) return;
+	const headers = Object.keys(rows[0]);
+	const escape  = (v) => {
+		const s = String(v ?? '');
+		return s.includes(',') || s.includes('"') || s.includes('\n')
+			? '"' + s.replace(/"/g, '""') + '"'
+			: s;
+	};
+	const csv = [headers.join(','), ...rows.map(r => headers.map(h => escape(r[h])).join(','))].join('\r\n');
+	triggerDownload('data:text/csv;charset=utf-8,' + encodeURIComponent(csv), filename);
+}
+
+function downloadJson(rows, filename) {
+	const json = JSON.stringify(rows, null, 2);
+	triggerDownload('data:application/json;charset=utf-8,' + encodeURIComponent(json), filename);
+}
+
+function triggerDownload(href, filename) {
+	const a = document.createElement('a');
+	a.href     = href;
+	a.download = filename;
+	a.style.display = 'none';
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-	document.getElementById("exportPdfBtn")?.addEventListener("click", openPdfModal);
-	document.getElementById("pdfExportModal")?.addEventListener("click", (e) => {
-		if (e.target.id === "pdfExportModal") closePdfModal();
+	document.getElementById("exportBtn")?.addEventListener("click", openExportModal);
+	document.getElementById("exportModal")?.addEventListener("click", (e) => {
+		if (e.target.id === "exportModal") closeExportModal();
 	});
 
 	if (typeof Chart === "undefined" || !window.dashboardData) return;

@@ -147,11 +147,11 @@
     display: flex; 
     align-items: center;
     justify-content: space-between;
-    padding: 0.85rem 1.25rem;
+    padding: 0.6rem 1rem;
     border-bottom: 1px solid var(--border-light);
     cursor: pointer;
     transition: background var(--transition-base);
-    gap: 12px;
+    gap: 10px;
 }
 
 .product-item:last-child { border-bottom: none; }
@@ -160,15 +160,15 @@
 .product-item.out-of-stock { opacity: 0.55; cursor: not-allowed; }
 
 .product-mono {
-    width: 40px; 
-    height: 40px; 
+    width: 32px; 
+    height: 32px; 
     border-radius: var(--radius-sm);
     background: var(--brand-accent-light); 
     color: var(--brand-accent-dark);
     display: flex; 
     align-items: center; 
     justify-content: center;
-    font-size: 0.75rem; 
+    font-size: 0.68rem; 
     font-weight: 700; 
     flex-shrink: 0;
     letter-spacing: 0.02em;
@@ -183,8 +183,8 @@
 }
 
 .product-name {
-    font-size: 0.9rem; 
-    font-weight: 500;
+    font-size: 0.82rem; 
+    font-weight: 600;
     color: var(--text-primary);
     white-space: nowrap; 
     overflow: hidden; 
@@ -193,9 +193,9 @@
 }
 
 .product-meta {
-    font-size: 0.75rem; 
+    font-size: 0.7rem; 
     color: var(--text-secondary); 
-    margin-top: 4px;
+    margin-top: 2px;
 }
 
 .product-right {
@@ -203,26 +203,55 @@
     flex-direction: column;
     align-items: flex-end; 
     justify-content: center;
-    gap: 6px; 
+    gap: 4px; 
     flex-shrink: 0;
 }
 
 .product-price {
-    font-size: 0.9rem; 
-    font-weight: 600;
+    font-size: 0.82rem; 
+    font-weight: 700;
     color: var(--text-primary);
 }
 
 .stock-badge {
-    font-size: 0.7rem; 
+    font-size: 0.65rem; 
     font-weight: 600;
-    padding: 2px 8px; 
+    padding: 1px 6px; 
     border-radius: 20px;
     text-transform: uppercase;
     letter-spacing: 0.02em;
 }
 .stock-badge.in { background: var(--brand-accent-light); color: var(--brand-accent-dark); }
 .stock-badge.out { background: var(--error-bg); color: var(--error-text); }
+
+/* Category filter tabs */
+.pos-cat-tabs {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--surface);
+    scrollbar-width: none;
+    flex-shrink: 0;
+}
+.pos-cat-tabs::-webkit-scrollbar { display: none; }
+
+.pos-cat-tab {
+    flex-shrink: 0;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all var(--transition-base);
+    font-family: inherit;
+}
+.pos-cat-tab:hover { color: var(--text-primary); background: var(--input-bg); }
+.pos-cat-tab.active { color: var(--brand-accent); border-bottom-color: var(--brand-accent); background: var(--brand-accent-light); }
 
 .list-state {
     padding: 4rem 1.5rem;
@@ -723,6 +752,9 @@
                     <input type="text" id="productSearch" class="form-input" placeholder="Search by name or SKU…" oninput="handleSearch(this.value)">
                 </div>
             </div>
+
+            <!-- Category tabs slot — populated by JS after products load -->
+            <div id="posCategoryTabs" class="pos-cat-tabs" style="display:none;"></div>
 
             <div class="product-list" id="productList">
                 <div class="list-state">

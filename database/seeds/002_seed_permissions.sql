@@ -22,12 +22,7 @@ FROM roles r
 JOIN permissions p
 WHERE r.name = 'manager'
 AND p.name IN (
-    'manage_products',
-    'manage_stock',
-    'access_pos',
-    'view_reports',
-    'manage_warehouses',
-    'manage_categories'
+    'view_reports'
 );
 
 INSERT INTO role_permissions (role_id, permission_id)

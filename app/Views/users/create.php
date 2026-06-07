@@ -10,7 +10,7 @@
 
     <div class="card">
         <div class="card-body">
-            <form method="POST" action="/users/store">
+            <form method="POST" action="/users/create">
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Full Name *</label>

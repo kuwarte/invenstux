@@ -1,11 +1,17 @@
 <?php
 $uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $segments = array_filter(explode('/', $uri));
+$segments = array_values($segments);
 
 $currentPage = $segments[0] ?? 'dashboard';
-$pageTitle = ($currentPage === 'pos')
-    ? 'POS'
-    : ucfirst($currentPage);
+$currentSub  = $segments[1] ?? '';
+
+$pageTitle = match(true) {
+    $currentPage === 'pos'                                      => 'POS',
+    $currentPage === 'stocks' && $currentSub === 'thresholds'  => 'Thresholds',
+    $currentPage === 'audit'                                    => 'Stock Audit',
+    default                                                     => ucfirst($currentPage),
+};
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +29,6 @@ $pageTitle = ($currentPage === 'pos')
     <script src="/assets/js/layouts.main.js" defer></script>
 
     <?php if ($currentPage === 'dashboard'): ?>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="/assets/js/dashboard.index.js" defer></script>
     <?php elseif ($currentPage === 'pos'): ?>
@@ -138,6 +143,14 @@ $authzService = new AuthorizationService($GLOBALS['db'] ?? null);
                                 </svg>
                             </span>
                             <span>Sales History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/audit" class="<?= $currentPage === 'audit' ? 'active' : '' ?>">
+                            <span class="nav-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            </span>
+                            <span>Stock Audit</span>
                         </a>
                     </li>
                 <?php endif; ?>

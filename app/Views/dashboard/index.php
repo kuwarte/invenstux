@@ -16,9 +16,9 @@ $range = $range ?? "";
                 <option value="30days" <?= ($range === '30days') ? 'selected' : '' ?>>Last 30 Days</option>
             </select>
             
-            <button class="btn btn-primary" id="exportPdfBtn" aria-label="Export to PDF">
+            <button class="btn btn-primary" id="exportBtn" aria-label="Export data" onclick="openExportModal()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span>Export PDF</span>
+                <span>Export</span>
             </button>
         </div>
     </header>
@@ -182,38 +182,54 @@ $range = $range ?? "";
     </section>
 </main>
 
-<div id="pdfExportModal" class="pdf-export-modal" aria-hidden="true" role="dialog">
+<div id="exportModal" class="pdf-export-modal" aria-hidden="true" role="dialog">
     <div class="pdf-modal-content">
         <header class="pdf-modal-header">
-            <h3>Export Dashboard Report</h3>
-            <p>Choose what to include in your PDF</p>
+            <h3>Export Dashboard Data</h3>
+            <p>Choose format and what data to export</p>
         </header>
         <div class="pdf-options">
             <label class="pdf-option">
-                <input type="radio" name="pdfFormat" value="full" checked>
+                <input type="radio" name="exportFormat" value="csv" checked>
                 <div class="pdf-option-label">
-                    <span class="pdf-option-title">Full Report</span>
-                    <span class="pdf-option-desc">All statistics, charts, and tables</span>
+                    <span class="pdf-option-title">CSV</span>
+                    <span class="pdf-option-desc">Spreadsheet-compatible, opens in Excel</span>
                 </div>
             </label>
             <label class="pdf-option">
-                <input type="radio" name="pdfFormat" value="summary">
+                <input type="radio" name="exportFormat" value="json">
                 <div class="pdf-option-label">
-                    <span class="pdf-option-title">Summary Only</span>
-                    <span class="pdf-option-desc">Key metrics and statistics</span>
+                    <span class="pdf-option-title">JSON</span>
+                    <span class="pdf-option-desc">Structured data for developers or APIs</span>
+                </div>
+            </label>
+        </div>
+        <div class="pdf-options" style="margin-top:.75rem; border-top:1px solid var(--border-light); padding-top:.75rem;">
+            <label class="pdf-option">
+                <input type="radio" name="exportDataset" value="top_products" checked>
+                <div class="pdf-option-label">
+                    <span class="pdf-option-title">Top Revenue Products</span>
+                    <span class="pdf-option-desc">Product name, SKU, units sold, revenue</span>
                 </div>
             </label>
             <label class="pdf-option">
-                <input type="radio" name="pdfFormat" value="revenue">
+                <input type="radio" name="exportDataset" value="low_stock">
                 <div class="pdf-option-label">
-                    <span class="pdf-option-title">Revenue Report</span>
-                    <span class="pdf-option-desc">Top revenue generators only</span>
+                    <span class="pdf-option-title">Inventory Risk</span>
+                    <span class="pdf-option-desc">Low-stock items with warehouse and quantity</span>
+                </div>
+            </label>
+            <label class="pdf-option">
+                <input type="radio" name="exportDataset" value="summary">
+                <div class="pdf-option-label">
+                    <span class="pdf-option-title">Dashboard Summary</span>
+                    <span class="pdf-option-desc">Key KPI metrics for the selected period</span>
                 </div>
             </label>
         </div>
         <footer class="pdf-modal-actions">
-            <button class="btn-cancel" onclick="closePdfModal()">Cancel</button>
-            <button class="btn-export" onclick="generatePdf()">Generate PDF</button>
+            <button class="btn-cancel" onclick="closeExportModal()">Cancel</button>
+            <button class="btn-export" onclick="runExport()">Download</button>
         </footer>
     </div>
 </div>
@@ -223,6 +239,12 @@ $range = $range ?? "";
         totalRevenue: <?= json_encode((float)($salesStats['total_revenue'] ?? 0)) ?>,
         targetRevenue: <?= json_encode((float)$phpTargetVal) ?>,
         topProductsLabels: <?= json_encode(array_column($topProducts ?? [], 'name')) ?>,
-        topProductsSold: <?= json_encode(array_map('intval', array_column($topProducts ?? [], 'total_sold'))) ?>
+        topProductsSold: <?= json_encode(array_map('intval', array_column($topProducts ?? [], 'total_sold'))) ?>,
+        topProducts: <?= json_encode($topProducts ?? []) ?>,
+        lowStockItems: <?= json_encode($lowStockItems ?? []) ?>,
+        totalProducts: <?= json_encode((int)($stats['total_products'] ?? 0)) ?>,
+        totalWarehouses: <?= json_encode((int)($stats['total_warehouses'] ?? 0)) ?>,
+        totalSales: <?= json_encode((int)($salesStats['total_sales'] ?? 0)) ?>,
+        range: <?= json_encode($range ?? 'today') ?>
     };
 </script>

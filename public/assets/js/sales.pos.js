@@ -1,6 +1,7 @@
 let cart = [];
 let allProducts = [];
 let filteredProducts = [];
+let activeCategory = 'all';
 
 let confirmTimeout = null;
 
@@ -38,6 +39,11 @@ function syncWarehouse(value, source) {
 		renderProductsState("empty");
 		return;
 	}
+
+	// Reset category tabs for new warehouse
+	const tabBar = document.getElementById('posCategoryTabs');
+	if (tabBar) { tabBar.innerHTML = ''; tabBar.style.display = 'none'; }
+	activeCategory = 'all';
 
 	loadProducts(value);
 }
@@ -96,39 +102,68 @@ function renderProducts(items) {
 		return;
 	}
 
-	list.innerHTML = items
-		.map((p) => {
-			const inStock = p.stock > 0;
-			const initials = p.name
-				.trim()
-				.split(" ")
-				.slice(0, 2)
-				.map((w) => w[0])
-				.join("")
-				.toUpperCase();
+	// Build category tabs once per warehouse load
+	renderCategoryTabs();
 
-			const escapedName = p.name.replace(/'/g, "\\'");
+	// Apply active category filter
+	const display = activeCategory === 'all'
+		? items
+		: items.filter(p => (p.category_name || 'Uncategorized') === activeCategory);
 
-			const clickAction = inStock
-				? `addToCart(${p.id}, '${escapedName}', ${p.unit_cost}, '${p.sku}', ${p.stock})`
-				: "void(0)";
+	if (!display.length) {
+		list.innerHTML = `<div class="list-state">
+			<div><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+			<p>No products in this category</p><small>Try a different category.</small></div>`;
+		return;
+	}
 
-			return `
-        <div class="product-item ${inStock ? "" : "out-of-stock"}" onclick="${clickAction}">
-            <div class="product-mono">${initials}</div>
-            <div class="product-info">
-                <div class="product-name">${escHtml(p.name)}</div>
-                <div class="product-meta">${escHtml(p.sku)}</div>
-            </div>
-            <div class="product-right">
-                <span class="product-price">₱${parseFloat(p.unit_cost).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                <span class="stock-badge ${inStock ? "in" : "out"}">
-                    ${inStock ? p.stock + " in stock" : "Out of stock"}
-                </span>
-            </div>
-        </div>`;
-		})
-		.join("");
+	list.innerHTML = display.map((p) => {
+		const inStock = p.stock > 0;
+		const initials = p.name.trim().split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+		const escapedName = p.name.replace(/'/g, "\\'");
+		const clickAction = inStock
+			? `addToCart(${p.id}, '${escapedName}', ${p.unit_cost}, '${p.sku}', ${p.stock})`
+			: 'void(0)';
+
+		return `
+		<div class="product-item ${inStock ? '' : 'out-of-stock'}" onclick="${clickAction}">
+			<div class="product-mono">${escHtml(initials)}</div>
+			<div class="product-info">
+				<div class="product-name">${escHtml(p.name)}</div>
+				<div class="product-meta">${escHtml(p.sku)}${p.category_name ? ' · ' + escHtml(p.category_name) : ''}</div>
+			</div>
+			<div class="product-right">
+				<span class="product-price">₱${parseFloat(p.unit_cost).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+				<span class="stock-badge ${inStock ? 'in' : 'out'}">
+					${inStock ? p.stock + ' left' : 'Out of stock'}
+				</span>
+			</div>
+		</div>`;
+	}).join('');
+}
+
+function renderCategoryTabs() {
+	const tabBar = document.getElementById('posCategoryTabs');
+	if (!tabBar) return;
+
+	const cats = ['All', ...new Set(allProducts.map(p => p.category_name || 'Uncategorized'))];
+
+	tabBar.innerHTML = cats.map(c => {
+		const key = c === 'All' ? 'all' : c;
+		return `<button class="pos-cat-tab ${key === activeCategory ? 'active' : ''}"
+			onclick="setCategory('${escHtml(key)}')">${escHtml(c)}</button>`;
+	}).join('');
+
+	tabBar.style.display = 'flex';
+}
+
+function setCategory(cat) {
+	activeCategory = cat;
+	document.querySelectorAll('.pos-cat-tab').forEach(btn => {
+		const label = btn.textContent.trim();
+		btn.classList.toggle('active', label === (cat === 'all' ? 'All' : cat));
+	});
+	renderProducts(filteredProducts);
 }
 
 function handleSearch(query) {

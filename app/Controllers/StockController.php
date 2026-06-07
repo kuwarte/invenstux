@@ -109,6 +109,12 @@ class StockController extends Controller
         $this->redirect('/stocks');
     }
 
+    public function indexAudit(): void
+    {
+        $data = $this->stockService->getAuditData();
+        $this->view('stocks/audit', $data);
+    }
+
     public function productsInWarehouse(): void
     {
         header('Content-Type: application/json');

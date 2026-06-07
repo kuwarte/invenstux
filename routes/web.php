@@ -73,3 +73,6 @@ $router->get('/sales', 'SalesController@index');
 $router->get('/sales/filter', 'SalesController@filter');
 $router->get('/sales/view', 'SalesController@indexView');
 $router->get('/sales/receipt', 'SalesController@indexSalesReceipt');
+
+// audit
+$router->get('/audit', 'AuditController@index');
